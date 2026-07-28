@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>💕 今天在哪里做爱？？？ 💕</title>
+    <style>
+        /* ===== 全局重置 & 基础 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 50%, #1a0a2e 100%);
+            font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ===== 浮动爱心背景 ===== */
+        @keyframes floatHeart {
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-18px) rotate(6deg);
+            }
+        }
+        .heart-bg {
+            position: fixed;
+            color: rgba(255, 105, 180, 0.08);
+            font-size: 44px;
+            pointer-events: none;
+            animation: floatHeart 5s ease-in-out infinite;
+            z-index: 0;
+            user-select: none;
+        }
+
+        /* ===== 头部 ===== */
+        .header {
+            text-align: center;
+            margin-bottom: 28px;
+            position: relative;
+            z-index: 1;
+        }
+        .header h1 {
+            font-size: 38px;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 0 2px 20px rgba(255, 105, 180, 0.5);
+            letter-spacing: 1px;
+        }
+        .header p {
+            color: rgba(255, 255, 255, 0.45);
+            margin-top: 8px;
+            font-size: 15px;
+            letter-spacing: 2px;
+        }
+
+        /* ===== 转盘容器 ===== */
+        .wheel-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        .wheel-container {
+            position: relative;
+            width: 420px;
+            height: 420px;
+        }
+
+        /* ===== 指针（固定在顶部） ===== */
+        .pointer {
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 25;
+            width: 0;
+            height: 0;
+            border-left: 18px solid transparent;
+            border-right: 18px solid transparent;
+            border-top: 36px solid #ff1493;
+            filter: drop-shadow(0 2px 12px rgba(255, 20, 147, 0.7));
+            transition: filter 0.3s ease;
+            pointer-events: none;
+        }
+        .pointer.active {
+            filter: drop-shadow(0 0 24px rgba(255, 20, 147, 0.9)) drop-shadow(0 0 48px rgba(255, 20, 147, 0.4));
+        }
+
+        /* ===== 转盘本体 ===== */
+        @keyframes wheelPop {
+            0% {
+                transform: scale(0.96);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: relative;
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            box-shadow: 0 0 40px rgba(255, 105, 180, 0.25), inset 0 0 60px rgba(0, 0, 0, 0.15);
+            will-change: transform;
+        }
+        .wheel.spinning {
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+        }
+        .wheel.stopped {
+            animation: wheelPop 0.5s ease;
+        }
+
+        /* ===== 转盘上的文字标签 ===== */
+        .wheel-text {
+            position: absolute;
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7);
+            transform-origin: center;
+            white-space: nowrap;
+            pointer-events: none;
+            text-align: center;
+            line-height: 1.3;
+            user-select: none;
+        }
+        .wheel-text .label-name {
+            display: block;
+            font-size: 12px;
+            opacity: 0.92;
+        }
+
+        /* ===== 转盘中心 ===== */
+        .wheel-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 76px;
+            height: 76px;
+            background: radial-gradient(circle at 30% 30%, #ff8ec4, #da70d6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            box-shadow: 0 0 30px rgba(255, 105, 180, 0.6), inset 0 -4px 10px rgba(0, 0, 0, 0.2);
+            border: 3px solid rgba(255, 255, 255, 0.25);
+            font-size: 30px;
+            user-select: none;
+            transition: transform 0.3s ease;
+        }
+        .wheel-center:hover {
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+        .wheel-center.pulse {
+            animation: centerPulse 0.8s ease 3;
+        }
+        @keyframes centerPulse {
+            0%,
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.15);
+            }
+        }
+
+        /* ===== 按钮 ===== */
+        @keyframes pulse-glow {
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(255, 105, 180, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 50px rgba(255, 105, 180, 0.7);
+            }
+        }
+        .spin-btn {
+            margin-top: 36px;
+            padding: 18px 56px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, #ff1493, #ff69b4);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 30px rgba(255, 20, 147, 0.35);
+            transition: all 0.25s ease;
+            animation: pulse-glow 2.2s infinite;
+            font-family: inherit;
+            position: relative;
+            z-index: 1;
+            letter-spacing: 1px;
+            user-select: none;
+        }
+        .spin-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 44px rgba(255, 20, 147, 0.55);
+        }
+        .spin-btn:active {
+            transform: scale(0.96);
+        }
+        .spin-btn:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            animation: none;
+            transform: scale(0.98);
+        }
+
+        /* ===== 结果展示 ===== */
+        .result-display {
+            margin-top: 28px;
+            min-height: 90px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            position: relative;
+            z-index: 1;
+        }
+        .result-display.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .result-card {
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 14px 32px 14px 20px;
+            border-radius: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+        }
+        .result-color-swatch {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            border: 2px solid rgba(255, 255, 255, 0.20);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.10);
+            transition: background 0.4s ease;
+        }
+        .result-text-group {
+            text-align: left;
+        }
+        .result-text {
+            font-size: 30px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.2;
+            letter-spacing: 1px;
+        }
+        .result-text .emoji {
+            margin-right: 4px;
+        }
+        .result-subtitle {
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 14px;
+            margin-top: 2px;
+            letter-spacing: 1px;
+        }
+
+        @keyframes resultPop {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            60% {
+                transform: scale(1.08);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        .result-display.show .result-card {
+            animation: resultPop 0.5s ease forwards;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 500px) {
+            .wheel-container {
+                width: 340px;
+                height: 340px;
+            }
+            .wheel-text {
+                font-size: 13px;
+            }
+            .wheel-text .label-name {
+                font-size: 10px;
+            }
+            .header h1 {
+                font-size: 26px;
+            }
+            .spin-btn {
+                padding: 14px 38px;
+                font-size: 18px;
+            }
+            .result-card {
+                padding: 12px 20px 12px 14px;
+                gap: 12px;
+                border-radius: 40px;
+            }
+            .result-text {
+                font-size: 22px;
+            }
+            .result-color-swatch {
+                width: 34px;
+                height: 34px;
+            }
+            .wheel-center {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+        }
+        @media (max-width: 400px) {
+            .wheel-container {
+                width: 280px;
+                height: 280px;
+            }
+            .wheel-text {
+                font-size: 11px;
+            }
+            .wheel-text .label-name {
+                font-size: 9px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 浮动爱心背景 ===== -->
+    <div class="heart-bg" style="top:8%; left:6%; animation-delay:0.0s;">💕</div>
+    <div class="heart-bg" style="top:18%; right:10%; animation-delay:1.2s;">💖</div>
+    <div class="heart-bg" style="bottom:12%; left:12%; animation-delay:2.4s;">💗</div>
+    <div class="heart-bg" style="bottom:18%; right:6%; animation-delay:3.6s;">💝</div>
+    <div class="heart-bg" style="top:50%; left:2%; animation-delay:0.8s;">✨</div>
+    <div class="heart-bg" style="top:45%; right:2%; animation-delay:1.8s;">✨</div>
+
+    <!-- ===== 头部 ===== -->
+    <div class="header">
+        <h1>💕 今天在哪里做爱？？？ 💕</h1>
+        <p>点击按钮，让命运决定今晚的浪漫</p>
+    </div>
+
+    <!-- ===== 转盘 ===== -->
+    <div class="wheel-wrapper">
+        <div class="wheel-container">
+            <!-- 指针（固定） -->
+            <div class="pointer" id="pointer"></div>
+
+            <!-- 转盘 -->
+            <div class="wheel" id="wheel"></div>
+
+            <!-- 中心装饰 -->
+            <div class="wheel-center" id="wheelCenter">❤️</div>
+        </div>
+    </div>
+
+    <!-- ===== 按钮 ===== -->
+    <button class="spin-btn" id="spinBtn">✨ 开始转动 ✨</button>
+
+    <!-- ===== 结果展示 ===== -->
+    <div class="result-display" id="resultDisplay">
+        <div class="result-card">
+            <div class="result-color-swatch" id="resultSwatch"></div>
+            <div class="result-text-group">
+                <div class="result-text" id="resultText"></div>
+                <div class="result-subtitle" id="resultSubtitle"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  数据
+        // ============================================================
+        const locations = [
+            { name: '卧室', emoji: '🛏️', desc: '经典舒适，百试不厌' },
+            { name: '浴室', emoji: '🛁', desc: '水汽氤氲，情意绵绵' },
+            { name: '沙发', emoji: '🛋️', desc: '客厅冒险，刺激加倍' },
+            { name: '阳台', emoji: '🌃', desc: '星空为证，浪漫满分' },
+            { name: '厨房', emoji: '🍳', desc: '美食与爱，不可辜负' },
+            { name: '车内', emoji: '🚗', desc: '狭小空间，无限亲密' },
+            { name: '酒店', emoji: '🏨', desc: '换个环境，新鲜体验' },
+            { name: '帐篷', emoji: '⛺', desc: '野外探险，回归自然' },
+            { name: '小树林', emoji: '🌲', desc: '隐秘角落，野趣横生' },
+            { name: '餐桌', emoji: '🍽️', desc: '餐前甜点，别有一番风味' }
+        ];
+
+        const colors = [
+            '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3',
+            '#00bcd4', '#009688', '#4caf50', '#ff9800', '#ff5722'
+        ];
+
+        // ============================================================
+        //  常量
+        // ============================================================
+        const numSegments = locations.length;
+        const anglePerSegment = 360 / numSegments;
+        // 指针在正上方 → 12点钟方向 → 对应角度 270°（从右侧0°顺时针算）
+        const POINTER_ANGLE = 270;
+
+        // ============================================================
+        //  DOM 引用
+        // ============================================================
+        const wheel = document.getElementById('wheel');
+        const spinBtn = document.getElementById('spinBtn');
+        const resultDisplay = document.getElementById('resultDisplay');
+        const resultText = document.getElementById('resultText');
+        const resultSubtitle = document.getElementById('resultSubtitle');
+        const resultSwatch = document.getElementById('resultSwatch');
+        const pointerEl = document.getElementById('pointer');
+        const wheelCenter = document.getElementById('wheelCenter');
+
+        // ============================================================
+        //  构建转盘 (conic-gradient)
+        // ============================================================
+        function buildWheel() {
+            let gradient = 'conic-gradient(';
+            for (let i = 0; i < numSegments; i++) {
+                const start = i * anglePerSegment;
+                const end = (i + 1) * anglePerSegment;
+                gradient += `${colors[i]} ${start}deg ${end}deg`;
+                if (i < numSegments - 1) gradient += ', ';
+            }
+            gradient += ')';
+            wheel.style.background = gradient;
+
+            // 清除旧文字（保留背景）
+            const oldTexts = wheel.querySelectorAll('.wheel-text');
+            oldTexts.forEach(el => el.remove());
+
+            // 在每个扇区中间放置文字
+            const radius = 145;
+            for (let i = 0; i < numSegments; i++) {
+                const midAngle = (i * anglePerSegment + anglePerSegment / 2) * Math.PI / 180;
+                const x = Math.cos(midAngle) * radius;
+                const y = Math.sin(midAngle) * radius;
+
+                const el = document.createElement('div');
+                el.className = 'wheel-text';
+                el.innerHTML = `
+              ${locations[i].emoji}
+              <span class="label-name">${locations[i].name}</span>
+            `;
+                el.style.left = `calc(50% + ${x}px)`;
+                el.style.top = `calc(50% + ${y}px)`;
+                el.style.transform = 'translate(-50%, -50%)';
+                el.style.color = '#fff';
+                el.style.textShadow = '0 1px 8px rgba(0,0,0,0.8)';
+                wheel.appendChild(el);
+            }
+        }
+        buildWheel();
+
+        // ============================================================
+        //  转盘状态
+        // ============================================================
+        let currentRotation = 0; // 累计旋转角度
+        let isSpinning = false;
+
+        // ============================================================
+        //  核心：计算指针指向的扇区索引
+        // ============================================================
+        function getWinningIndex(rotationDeg) {
+            // 转盘旋转了 rotationDeg 度后，指针（固定于 270°）在转盘上的位置
+            // 指针在转盘坐标系中的角度 = (POINTER_ANGLE - rotationDeg) mod 360
+            let raw = (POINTER_ANGLE - (rotationDeg % 360) + 360) % 360;
+            // 加上半个扇区偏移，使指针指向扇区中间
+            let shifted = (raw + anglePerSegment / 2) % 360;
+            return Math.floor(shifted / anglePerSegment) % numSegments;
+        }
+
+        // ============================================================
+        //  更新结果展示
+        // ============================================================
+        function showResult(index) {
+            const item = locations[index];
+            const color = colors[index];
+
+            resultText.innerHTML = `${item.emoji} ${item.name}`;
+            resultSubtitle.textContent = item.desc;
+            resultSwatch.style.background = color;
+            resultDisplay.classList.add('show');
+
+            // 中心脉冲
+            wheelCenter.classList.remove('pulse');
+            void wheelCenter.offsetWidth;
+            wheelCenter.classList.add('pulse');
+
+            // 指针发光
+            pointerEl.classList.add('active');
+        }
+
+        // ============================================================
+        //  转盘旋转
+        // ============================================================
+        function spinWheel() {
+            if (isSpinning) return;
+            isSpinning = true;
+
+            // 重置 UI
+            spinBtn.disabled = true;
+            spinBtn.textContent = '🌀 转动中...';
+            resultDisplay.classList.remove('show');
+            pointerEl.classList.remove('active');
+            wheel.classList.remove('stopped');
+            wheel.classList.add('spinning');
+
+            // 随机旋转：至少 5 圈 + 随机角度
+            const extraSpins = 5 + Math.random() * 4; // 5~9 圈
+            const randomAngle = Math.random() * 360;
+            const totalRotation = extraSpins * 360 + randomAngle;
+            currentRotation += totalRotation;
+
+            // 应用旋转
+            wheel.style.transform = `rotate(${currentRotation}deg)`;
+
+            // 4 秒后停止
+            setTimeout(() => {
+                const finalAngle = currentRotation % 360;
+                const winIndex = getWinningIndex(finalAngle);
+
+                // 显示结果
+                showResult(winIndex);
+
+                // 结束状态
+                wheel.classList.remove('spinning');
+                wheel.classList.add('stopped');
+                isSpinning = false;
+                spinBtn.disabled = false;
+                spinBtn.textContent = '🎯 再转一次';
+
+                // 小细节：清除 stopped 类以便下次动画
+                setTimeout(() => {
+                    wheel.classList.remove('stopped');
+                }, 600);
+            }, 4000);
+        }
+
+        // ============================================================
+        //  绑定事件
+        // ============================================================
+        spinBtn.addEventListener('click', spinWheel);
+
+        // ============================================================
+        //  键盘支持 (空格触发)
+        // ============================================================
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && !isSpinning) {
+                e.preventDefault();
+                spinWheel();
+            }
+        });
+
+        // ============================================================
+        //  初始化：转盘初始位置（让指针指向某个扇区，用于展示）
+        // ============================================================
+        // 初始让指针指向扇区 0（卧室），便于展示
+        // 计算需要旋转的角度，使指针指向扇区 0 的中间
+        // 指针在 270°，扇区 0 在 0°~36°，中间为 18°
+        // 需要旋转：270° - 18° = 252°（顺时针）
+        // 但为了视觉效果，我们直接设置一个初始角度
+        const initRotation = 252;
+        currentRotation = initRotation;
+        wheel.style.transform = `rotate(${initRotation}deg)`;
+
+        // 初始显示扇区 0
+        setTimeout(() => {
+            showResult(0);
+        }, 300);
+
+        // ============================================================
+        //  控制台帮助（调试用）
+        // ============================================================
+        console.log('💕 转盘已加载！点击按钮或按空格键旋转。');
+        console.log(`📌 指针角度: ${POINTER_ANGLE}° (正上方)`);
+        console.log(`📐 每扇区: ${anglePerSegment}°`);
+        console.log(`🎯 当前指向: ${locations[0].emoji} ${locations[0].name}`);
+    </script>
+
+</body>
+</html>
