@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-page-node-id="lpVF4opYX9agdxa2AgALk1">
-<head data-page-node-id="uNEjKVqA0hQ4Ul4IDyMZy5">
-<meta charset="utf-8" data-page-node-id="DtjK9pTEr7WOCTAEhQbgWZ">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" data-page-node-id="BJG8iSVPZhlDIgbrsABliC">
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>今天吃什么｜菜谱转盘</title>
 <style>
 :root {
-  --ink:#21402f; --muted:#75897c;
-  --brand:#31a97b; --brand-d:#28875f; --brand-soft:#e8f6ef;
-  --accent:#ff9a62; --accent-d:#ef7a3c;
+  --ink:#234034; --muted:#7c8a80;
+  --brand:#36a97c; --brand-d:#2b8f66; --brand-soft:#e9f6ef;
+  --accent:#ff9a62; --accent-d:#f4854a;
   --card:#ffffff; --line:rgba(45,92,68,.10);
-  --shadow:0 18px 50px rgba(40,95,70,.11);
-  --shadow-sm:0 6px 20px rgba(45,100,72,.07);
+  --shadow:0 14px 44px rgba(45,100,72,.10);
+  --shadow-sm:0 6px 20px rgba(45,100,72,.08);
 }
 * { box-sizing:border-box; }
 html { -webkit-text-size-adjust:100%; }
@@ -19,85 +19,67 @@ body {
   margin:0; min-height:100vh; color:var(--ink);
   font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
   background:
-    radial-gradient(circle at 6% 2%, rgba(122,201,165,.30), transparent 40%),
-    radial-gradient(circle at 97% 6%, rgba(255,154,98,.20), transparent 38%),
-    radial-gradient(circle at 50% 108%, rgba(122,201,165,.16), transparent 46%),
-    linear-gradient(168deg,#f5fbf7 0%,#eef6f1 50%,#fdf4ec 100%);
-  background-attachment:fixed; line-height:1.55; -webkit-font-smoothing:antialiased;
+    radial-gradient(circle at 8% 4%, rgba(121,199,162,.28), transparent 38%),
+    radial-gradient(circle at 96% 8%, rgba(255,154,98,.18), transparent 36%),
+    linear-gradient(165deg,#f4faf6 0%,#eef6f1 48%,#fdf3ea 100%);
+  background-attachment:fixed; line-height:1.5; -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
   padding-bottom:env(safe-area-inset-bottom);
 }
 button { font:inherit; border:0; cursor:pointer; -webkit-tap-highlight-color:transparent; }
-:focus-visible { outline:3px solid rgba(49,169,123,.45); outline-offset:3px; }
-::selection { background:rgba(49,169,123,.18); }
-@media (prefers-reduced-motion:reduce) {
-  * { animation-duration:.01ms !important; transition-duration:.01ms !important; }
-}
 .app { width:100%; max-width:760px; margin:0 auto; padding:14px 14px calc(20px + env(safe-area-inset-bottom)); }
 .shell { display:flex; flex-direction:column; gap:14px; }
 
-.hero { display:flex; flex-direction:column; gap:12px; padding:22px 20px; border:1px solid var(--line); min-width:0;
-  border-radius:26px; background:rgba(255,255,255,.78); box-shadow:var(--shadow-sm); backdrop-filter:blur(16px);
-  position:relative; overflow:hidden; }
-.hero::after { content:""; position:absolute; right:-40px; top:-64px; width:190px; height:190px; border-radius:50%;
-  pointer-events:none; background:radial-gradient(circle at 35% 35%, rgba(255,154,98,.22), rgba(255,154,98,0) 70%); }
-.eyebrow { color:var(--brand); font-size:11px; font-weight:800; letter-spacing:.3em; }
-h1 { margin:8px 0 6px; font-size:clamp(30px,8vw,46px); line-height:1.05; font-weight:800; letter-spacing:-.02em; color:var(--ink); }
-.lead { margin:0; color:var(--muted); font-size:13.5px; line-height:1.8; max-width:56ch; }
-.hero-note { font-size:12.5px; line-height:1.75; color:#5d7767; padding:13px 15px; border-radius:16px;
-  background:linear-gradient(150deg,#ebf8f1,#e6f4ec); border:1px solid rgba(49,169,123,.16); }
+.hero { display:flex; flex-direction:column; gap:12px; padding:20px; border:1px solid var(--line); min-width:0;
+  border-radius:24px; background:rgba(255,255,255,.74); box-shadow:var(--shadow-sm); backdrop-filter:blur(14px); }
+.eyebrow { color:var(--brand); font-size:11px; font-weight:800; letter-spacing:.28em; }
+h1 { margin:6px 0 4px; font-size:clamp(30px,8vw,46px); line-height:1.05; font-weight:800; letter-spacing:-.02em; color:var(--ink); }
+.lead { margin:0; color:var(--muted); font-size:13.5px; line-height:1.75; }
+.hero-note { font-size:12.5px; line-height:1.7; color:var(--muted); padding:12px 14px; border-radius:16px;
+  background:var(--brand-soft); border:1px solid rgba(54,169,124,.12); }
 .hero-note strong { color:var(--brand-d); font-weight:800; margin-right:6px; }
 
-.stage, .side { border:1px solid var(--line); border-radius:26px; background:var(--card); box-shadow:var(--shadow); padding:17px; display:flex; flex-direction:column; min-width:0; }
-.stage { gap:15px; } .side { gap:14px; }
+.stage, .side { border:1px solid var(--line); border-radius:24px; background:var(--card); box-shadow:var(--shadow); padding:16px; display:flex; flex-direction:column; min-width:0; }
+.stage { gap:14px; } .side { gap:13px; }
 
-.chips { display:flex; flex-wrap:wrap; gap:8px; max-width:100%; }
-.chip { border:1px solid var(--line); background:#f5faf7; color:#5c7264; border-radius:999px; padding:8px 14px;
-  font-size:12.5px; font-weight:700; min-height:36px; transition:.18s ease; }
+.chips { display:flex; flex-wrap:wrap; gap:7px; max-width:100%; }
+.chip { border:1px solid var(--line); background:#f6faf7; color:#5c7264; border-radius:999px; padding:8px 13px;
+  font-size:12.5px; font-weight:600; min-height:36px; transition:.18s ease; }
 .chip:active { transform:scale(.95); }
-.chip.is-active { background:linear-gradient(135deg,#3cb587,var(--brand-d)); border-color:transparent; color:#fff;
-  box-shadow:0 8px 18px rgba(49,169,123,.30); }
+.chip.is-active { background:var(--brand); border-color:var(--brand); color:#fff; box-shadow:0 6px 16px rgba(54,169,124,.28); }
 
-.playground { display:flex; flex-direction:column; align-items:center; gap:17px; width:100%; min-width:0; }
-.wheel-wrap { position:relative; width:100%; max-width:440px; margin-inline:auto; aspect-ratio:1; display:grid; place-items:center; }
-.wheel-glow { position:absolute; inset:-4%; border-radius:50%;
-  background:radial-gradient(circle at 50% 40%, rgba(255,255,255,.92), rgba(255,255,255,0) 64%); }
-.wheel-svg { position:relative; width:100%; height:auto; display:block; filter:drop-shadow(0 18px 34px rgba(54,100,74,.20)); }
+.playground { display:flex; flex-direction:column; align-items:center; gap:16px; width:100%; min-width:0; }
+.wheel-wrap { position:relative; width:100%; max-width:430px; margin-inline:auto; aspect-ratio:1; display:grid; place-items:center; }
+.wheel-glow { position:absolute; inset:-3%; border-radius:50%;
+  background:radial-gradient(circle at 50% 42%, rgba(255,255,255,.9), rgba(255,255,255,0) 62%); }
+.wheel-svg { position:relative; width:100%; height:auto; display:block; filter:drop-shadow(0 16px 30px rgba(54,100,74,.20)); }
 .wheel-rotate { transform-box:view-box; transform-origin:300px 300px; transition:transform 4.6s cubic-bezier(.12,.86,.14,1); }
-.wheel-rotate.is-resetting, .wheel-rotate.is-resetting .slice-text { transition:none; }
-.wheel-rotate .slice { stroke:rgba(255,255,255,.9); stroke-width:2.5; transition:filter .3s ease; }
-.wheel-rotate .slice.is-winner { filter:brightness(1.12) saturate(1.06) drop-shadow(0 0 10px rgba(255,255,255,.9)); }
-.wheel-gloss { pointer-events:none; }
-.slice-text { fill:#fff; font-weight:800; letter-spacing:.5px; font-family:inherit; pointer-events:none;
-  transform-box:fill-box; transform-origin:center; transition:transform 4.6s cubic-bezier(.12,.86,.14,1);
-  paint-order:stroke; stroke:rgba(26,62,45,.30); stroke-width:4px; stroke-linejoin:round; }
+.wheel-rotate.is-resetting { transition:none; }
+.wheel-rotate path { stroke:rgba(255,255,255,.92); stroke-width:2; }
+.slice-text { fill:#fff; font-weight:800; letter-spacing:1px; font-family:inherit;
+  paint-order:stroke; stroke:rgba(28,74,52,.16); stroke-width:3px; stroke-linejoin:round; }
 .wheel-rim { stroke:#fff; stroke-width:7; fill:none; }
-.wheel-hub .hub-ring { fill:none; stroke:rgba(255,255,255,.5); stroke-width:2; }
 .wheel-hub circle { fill:url(#hubGrad); stroke:#fff; stroke-width:6; }
-.hub-text { fill:#fff; font-weight:900; font-size:40px; font-family:"STSong","SimSun",serif; pointer-events:none; }
-.pointer { position:absolute; top:-10px; left:50%; transform:translateX(-50%); z-index:5; width:0; height:0;
-  border-left:15px solid transparent; border-right:15px solid transparent; border-top:28px solid var(--accent-d);
-  filter:drop-shadow(0 4px 6px rgba(214,110,60,.32)); }
-.pointer::after { content:""; position:absolute; left:50%; top:-34px; transform:translateX(-50%);
-  width:20px; height:20px; border-radius:50%;
+.hub-text { fill:#fff; font-weight:900; font-size:40px; font-family:"STSong","SimSun",serif; }
+.pointer { position:absolute; top:-2px; left:50%; transform:translateX(-50%); z-index:5; width:0; height:0;
+  border-left:13px solid transparent; border-right:13px solid transparent; border-top:24px solid var(--accent-d);
+  filter:drop-shadow(0 3px 4px rgba(214,110,60,.3)); }
+.pointer::after { content:""; position:absolute; left:50%; top:-30px; transform:translateX(-50%);
+  width:18px; height:18px; border-radius:50%;
   background:radial-gradient(circle at 35% 30%,#ffffff,#ffd2b0 45%,var(--accent-d));
-  box-shadow:0 0 0 5px rgba(255,255,255,.85); }
-body.is-spinning .pointer { animation:pointerPulse .7s ease-in-out infinite; }
-@keyframes pointerPulse { 0%,100% { transform:translateX(-50%) translateY(0); } 50% { transform:translateX(-50%) translateY(4px); } }
+  box-shadow:0 0 0 4px rgba(255,255,255,.82); }
 
-.controls { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; width:100%; max-width:400px; margin-inline:auto; }
+.controls { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; width:100%; max-width:380px; margin-inline:auto; }
 .controls .primary { flex:1 1 100%; }
 .controls .secondary { flex:1 1 0; min-width:0; }
-.primary, .secondary { min-height:52px; padding:0 28px; border-radius:999px; font-size:15px; font-weight:700;
+.primary, .secondary { min-height:50px; padding:0 28px; border-radius:999px; font-size:15px; font-weight:700;
   display:inline-flex; align-items:center; justify-content:center; transition:.18s ease; }
-.primary { color:#fff; background:linear-gradient(135deg,#ffb27f,var(--accent-d)); box-shadow:0 12px 24px rgba(239,122,60,.30); }
-.secondary { color:var(--brand-d); background:#fff; border:1.5px solid rgba(49,169,123,.32); }
+.primary { color:#fff; background:linear-gradient(135deg,#ffab77,var(--accent-d)); box-shadow:0 10px 22px rgba(244,133,74,.32); }
+.secondary { color:var(--brand-d); background:#fff; border:1.5px solid rgba(54,169,124,.35); }
 .primary:active, .secondary:active { transform:scale(.96); }
-.primary:disabled, .secondary:disabled { opacity:.6; cursor:progress; transform:none; }
+.primary:disabled, .secondary:disabled { opacity:.55; cursor:wait; }
 .status { margin:0; color:var(--muted); font-size:12.5px; text-align:center; display:flex; align-items:center; gap:8px; }
-.status::before { content:""; width:7px; height:7px; border-radius:50%; background:var(--brand); box-shadow:0 0 0 4px rgba(49,169,123,.14); transition:.2s ease; }
-body.is-spinning .status::before { background:var(--accent-d); box-shadow:0 0 0 5px rgba(239,122,60,.16); animation:dotBlink .7s ease-in-out infinite; }
-@keyframes dotBlink { 0%,100% { opacity:1; } 50% { opacity:.35; } }
+.status::before { content:""; width:7px; height:7px; border-radius:50%; background:var(--brand); box-shadow:0 0 0 4px rgba(54,169,124,.12); }
 
 .modal { position:fixed; inset:0; z-index:50; display:flex; align-items:flex-end; justify-content:center;
   background:rgba(27,54,40,.42); -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px); animation:fadeIn .2s ease; }
@@ -106,15 +88,13 @@ body.modal-open { overflow:hidden; }
 .modal-card { width:100%; max-height:86vh; background:#fff; border-radius:26px 26px 0 0;
   box-shadow:0 -12px 50px rgba(30,60,44,.25); display:flex; flex-direction:column; overflow:hidden;
   animation:sheetUp .26s cubic-bezier(.2,.8,.2,1); }
-.modal-head { display:flex; align-items:center; justify-content:space-between; padding:18px 20px 12px;
-  position:sticky; top:0; background:#fff; z-index:2; }
+.modal-head { display:flex; align-items:center; justify-content:space-between; padding:18px 20px 12px; }
 .modal-head h3 { margin:0; font-size:18px; font-weight:800; }
-.modal-close { width:36px; height:36px; border-radius:50%; background:#f1f5f2; color:#5c7264; font-size:20px; line-height:1; flex-shrink:0; transition:.18s ease; }
+.modal-close { width:36px; height:36px; border-radius:50%; background:#f1f5f2; color:#5c7264; font-size:20px; line-height:1; flex-shrink:0; }
 .modal-close:active { transform:scale(.92); }
-.pick-search { margin:0 20px 12px; min-height:48px; border:1.5px solid rgba(49,169,123,.24); background:#f7faf8;
-  border-radius:14px; padding:0 16px; font-size:15px; color:var(--ink); outline:none; font-family:inherit;
-  position:sticky; top:66px; z-index:2; transition:.18s ease; }
-.pick-search:focus { border-color:var(--brand); background:#fff; box-shadow:0 0 0 4px rgba(49,169,123,.10); }
+.pick-search { margin:0 20px 12px; min-height:46px; border:1.5px solid rgba(54,169,124,.25); background:#f7faf8;
+  border-radius:14px; padding:0 16px; font-size:15px; color:var(--ink); outline:none; font-family:inherit; }
+.pick-search:focus { border-color:var(--brand); background:#fff; }
 .pick-grid { overflow-y:auto; padding:0 20px calc(20px + env(safe-area-inset-bottom)); -webkit-overflow-scrolling:touch; }
 .pick-group { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:6px; }
 .pick-group-title { grid-column:1 / -1; font-size:12px; font-weight:800; color:var(--brand-d); letter-spacing:.12em; margin:14px 2px 2px; }
@@ -124,35 +104,26 @@ body.modal-open { overflow:hidden; }
 @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 @keyframes sheetUp { from { transform:translateY(26px); opacity:.5; } to { transform:none; opacity:1; } }
 
-.panel-title { display:flex; align-items:center; justify-content:space-between; gap:10px; }
-.panel-title h2 { margin:0; font-size:18px; font-weight:800; letter-spacing:-.01em; }
-.badge { font-size:11.5px; color:var(--brand-d); background:var(--brand-soft); border:1px solid rgba(49,169,123,.14);
-  border-radius:999px; padding:6px 12px; font-weight:800; white-space:nowrap; }
-.food-photo { position:relative; aspect-ratio:4/3; border-radius:20px; overflow:hidden; background:linear-gradient(145deg,#d8ecd9,#bfe0d2); }
-.food-photo::after { content:""; position:absolute; inset:0; pointer-events:none;
-  background:linear-gradient(180deg, rgba(20,50,36,0) 55%, rgba(20,50,36,.26)); }
-.food-photo img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;
-  opacity:0; transition:opacity .4s ease; }
-.food-photo img.is-ready { opacity:1; }
+.panel-title { display:flex; align-items:center; justify-content:space-between; }
+.panel-title h2 { margin:0; font-size:18px; font-weight:800; }
+.badge { font-size:12px; color:var(--brand-d); background:var(--brand-soft); border-radius:999px; padding:6px 12px; font-weight:700; }
+.food-photo { position:relative; aspect-ratio:16/10; border-radius:18px; overflow:hidden; background:linear-gradient(145deg,#d8ecd9,#bfe0d2); }
+.food-photo img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
 .photo-fallback { position:absolute; inset:0; display:grid; place-items:center; padding:24px; color:#fff;
-  font-family:"STSong","SimSun",serif; font-size:clamp(24px,7vw,34px); font-weight:700; text-align:center;
-  background:radial-gradient(circle at 30% 18%,rgba(255,255,255,.26),transparent 44%),
-    linear-gradient(150deg,#7cc7a2,#4f9f8e); }
+  font-family:"STSong","SimSun",serif; font-size:30px; text-align:center;
+  background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.22),transparent 40%); }
 .food-photo img:not([hidden]) + .photo-fallback { opacity:0; }
 .result-card { padding:2px; }
-.result-card.is-new { animation:pop .38s cubic-bezier(.2,.8,.2,1); }
-.result-label { color:var(--accent-d); font-size:10.5px; font-weight:800; letter-spacing:.24em; }
-.result-card h3 { margin:6px 0 6px; font-size:clamp(28px,6vw,40px); font-weight:800; line-height:1.1; letter-spacing:-.01em; color:var(--ink); }
-.meta { color:var(--muted); font-size:12.5px; line-height:1.6; display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; }
-.meta .tag { color:var(--brand-d); background:var(--brand-soft); border-radius:999px; padding:3px 10px; font-weight:800; font-size:11.5px; }
-@keyframes pop { 0% { opacity:0; transform:translateY(8px) scale(.985); } 100% { opacity:1; transform:none; } }
-.recipe-box { background:linear-gradient(168deg,#f8fbf9,#f4faf6); border:1px solid var(--line); border-radius:18px; padding:15px 16px; }
+.result-label { color:var(--accent-d); font-size:10.5px; font-weight:800; letter-spacing:.2em; }
+.result-card h3 { margin:5px 0 4px; font-size:clamp(28px,6vw,40px); font-weight:800; line-height:1.1; letter-spacing:-.01em; color:var(--ink); }
+.meta { color:var(--muted); font-size:12.5px; line-height:1.6; }
+.recipe-box { background:#f8fbf9; border:1px solid var(--line); border-radius:18px; padding:15px; }
 .recipe-box h4 { margin:0 0 11px; color:var(--brand-d); font-size:14px; font-weight:800; display:flex; align-items:center; gap:8px; }
 .recipe-box h4::before { content:""; width:4px; height:15px; border-radius:2px; background:linear-gradient(var(--brand),var(--accent)); }
 .ingredients { display:flex; flex-wrap:wrap; gap:7px; }
-.ingredient { background:#fff; color:#3a6b53; border:1px solid rgba(49,169,123,.16); border-radius:9px; padding:7px 10px; font-size:12.5px; font-weight:600; }
-.steps { margin:0; padding-left:20px; color:#3f4d44; font-size:13.5px; line-height:1.8; }
-.steps li + li { margin-top:8px; }
+.ingredient { background:#fff; color:#3a6b53; border:1px solid rgba(54,169,124,.16); border-radius:9px; padding:7px 10px; font-size:12.5px; font-weight:600; }
+.steps { margin:0; padding-left:20px; color:#3f4d44; font-size:13.5px; line-height:1.75; }
+.steps li + li { margin-top:7px; }
 .steps li::marker { color:var(--brand); font-weight:800; }
 
 @media (min-width:960px) {
@@ -173,107 +144,89 @@ body.modal-open { overflow:hidden; }
 @media (max-width:380px) {
   .primary, .secondary { padding:0 20px; font-size:14px; }
   .chip { padding:8px 12px; }
-  .stage, .side { padding:14px; border-radius:22px; }
-}
-@media (hover:hover) {
-  .primary:hover { transform:translateY(-1px); box-shadow:0 16px 28px rgba(239,122,60,.34); }
-  .secondary:hover { background:var(--brand-soft); border-color:rgba(49,169,123,.5); }
-  .chip:hover { background:#eef7f2; }
-  .pick-item:hover { background:var(--brand-soft); color:var(--brand-d); }
-  .modal-close:hover { background:#e9f1ec; }
 }
 </style>
 </head>
-<body data-page-node-id="AdLjAmdlIUab9PHqx4YzCp">
-<main class="app" data-page-node-id="huIYLELiwYbPFyaAHRjrzW">
-  <section class="shell" aria-label="今天吃什么菜谱转盘" data-page-node-id="b21iNbA96YuSBA9nBM0tol">
-    <header class="hero" data-page-node-id="4CoAmA6Mfx1H1gN1IattGP">
-      <div class="hero-main" data-page-node-id="LHLGsESXHE4zaYCgALcsB4">
-        <div class="eyebrow" data-page-node-id="p5eqRQ9OkKR4DeM1lfGnVN">RECIPE WHEEL</div>
-        <h1 data-page-node-id="IWLPVUuWyB7PVTcgsu9rh0">今天吃什么？</h1>
-        <p class="lead" data-page-node-id="lsXLnIoHbDzhKAfiBQQ5gl">108 道家常菜谱随机挑选：先按分类缩小范围，再转动转盘，抽中即显示用料、对应做法、参考来源与成品图。</p>
+<body>
+<main class="app">
+  <section class="shell" aria-label="今天吃什么菜谱转盘">
+    <header class="hero">
+      <div class="hero-main">
+        <div class="eyebrow">RECIPE WHEEL</div>
+        <h1>今天吃什么？</h1>
+        <p class="lead">108 道家常菜谱随机挑选：先按分类缩小范围，再转动转盘，抽中即显示用料、对应做法、参考来源与成品图。</p>
       </div>
-      <div class="hero-note" data-page-node-id="DwFEdFVHMktnknaezCmVM2"><strong data-page-node-id="pjXK5SfzQh0R9XiIAY7QQ4">玩法</strong>每轮最多 12 道候选，「换一批」从当前分类重新抽取，全部菜谱都会参与；也可以按空格键转动。</div>
+      <div class="hero-note"><strong>玩法</strong>每轮最多 12 道候选，「换一批」从当前分类重新抽取，全部菜谱都会参与；也可以按空格键转动。</div>
     </header>
 
-    <section class="stage" aria-label="菜谱转盘" data-page-node-id="ra9LZHpqkbwnZJ4J4bC1Y0">
-      <div class="chips" id="chips" role="tablist" aria-label="食物分类" data-page-node-id="F2bPPM6Eu1ofUivHBdBrki"></div>
-      <div class="playground" data-page-node-id="kyrzCgliDZdff9zml0cyAg">
-        <div class="wheel-wrap" data-page-node-id="FMHm91Cbir8BMQdbCGIHn9">
-          <div class="wheel-glow" aria-hidden="true" data-page-node-id="UJe2q0GZe9GZ8xfpbhxdKj"></div>
-          <svg id="wheel" class="wheel-svg" viewBox="0 0 600 600" aria-label="今天吃什么转盘" data-page-node-id="1BfAJ8WxwTogbEhudu1cul">
-            <defs data-page-node-id="F38dkh7MKt3pDJHMlrmk1A">
-              <radialGradient id="hubGrad" cx="36%" cy="30%" r="78%" data-page-node-id="zhy0AVg6q6qiKWqScAturh">
-                <stop offset="0%" stop-color="#fff3d6" data-page-node-id="JkgGQuyiiveoDcjInZG7U5"/>
-                <stop offset="55%" stop-color="#f0b86e" data-page-node-id="awSOTR2szVDbf5NI2a1NZj"/>
-                <stop offset="100%" stop-color="#dd8a4e" data-page-node-id="i7kXlEHQORdTWNrcqSs3DP"/>
-              </radialGradient>
-              <radialGradient id="glossGrad" cx="50%" cy="50%" r="50%" data-page-node-id="HInwPWDwYGZgnMgVYZ0SZy">
-                <stop offset="0%" stop-color="#ffffff" stop-opacity=".20" data-page-node-id="wJ88B5yh84rMERueOKAlS0"/>
-                <stop offset="58%" stop-color="#ffffff" stop-opacity=".06" data-page-node-id="liVENaSaHWbGmtmYnf3SlA"/>
-                <stop offset="100%" stop-color="#ffffff" stop-opacity="0" data-page-node-id="ChitLbD8b0c1jcPWQLNlQA"/>
+    <section class="stage" aria-label="菜谱转盘">
+      <div class="chips" id="chips" role="tablist" aria-label="食物分类"></div>
+      <div class="playground">
+        <div class="wheel-wrap">
+          <div class="wheel-glow" aria-hidden="true"></div>
+          <svg id="wheel" class="wheel-svg" viewBox="0 0 600 600" aria-label="今天吃什么转盘">
+            <defs>
+              <radialGradient id="hubGrad" cx="36%" cy="30%" r="78%">
+                <stop offset="0%" stop-color="#fff3d6"/>
+                <stop offset="55%" stop-color="#f0b86e"/>
+                <stop offset="100%" stop-color="#dd8a4e"/>
               </radialGradient>
             </defs>
-            <g id="wheelRotate" class="wheel-rotate" data-page-node-id="NFTodUxZumEDXrfDEOdIwo">
-              <g id="wheelSlices" data-page-node-id="TG35vqYWErhI5DrTCJrB48"></g>
-              <circle class="wheel-gloss" cx="300" cy="300" r="296" fill="url(#glossGrad)" data-page-node-id="j48wnt5HhM2Y9mLEezwvaj"/>
-              <g id="wheelLabels" class="wheel-labels" data-page-node-id="d2exMbSDJCRfjYKIMizSey"></g>
-            </g>
-            <circle class="wheel-rim" cx="300" cy="300" r="297" data-page-node-id="wddjCVxCm0E1SONelQ7SJJ"/>
-            <g class="wheel-hub" aria-hidden="true" data-page-node-id="wxOM3ZzI5Qpq8Wyd7SjwUE">
-              <circle class="hub-ring" cx="300" cy="300" r="68" data-page-node-id="VN8iOM7UjfV7wO34QcIFHr"/>
-              <circle cx="300" cy="300" r="56" data-page-node-id="1WS9RIG23yxV5DHEqPF9i4"/>
-              <text x="300" y="300" class="hub-text" text-anchor="middle" dominant-baseline="central" data-page-node-id="eDvpAlc7faCG2v1x6GuuVf">吃</text>
+            <g id="wheelRotate" class="wheel-rotate"></g>
+            <circle class="wheel-rim" cx="300" cy="300" r="297"/>
+            <g class="wheel-hub" aria-hidden="true">
+              <circle cx="300" cy="300" r="56"/>
+              <text x="300" y="300" class="hub-text" text-anchor="middle" dominant-baseline="central">吃</text>
             </g>
           </svg>
-          <div class="pointer" aria-hidden="true" data-page-node-id="57cWF0Shk1QDtElBme4IVe"></div>
+          <div class="pointer" aria-hidden="true"></div>
         </div>
-        <div class="controls" data-page-node-id="dFlc4TWpGqzPCfV9ic4tas">
-          <button class="primary" id="spinBtn" type="button" data-page-node-id="XeTE8tZKpKFJmhCdBFgkuF">开始转</button>
-          <button class="secondary" id="shuffleBtn" type="button" data-page-node-id="gFjUpHqH7H1FTpojGbyUpk">换一批</button>
-          <button class="secondary" id="pickBtn" type="button" data-page-node-id="XJic4fFvyPxBBjsrj4VZwo">直接点菜</button>
+        <div class="controls">
+          <button class="primary" id="spinBtn" type="button">开始转</button>
+          <button class="secondary" id="shuffleBtn" type="button">换一批</button>
+          <button class="secondary" id="pickBtn" type="button">直接点菜</button>
         </div>
-        <p class="status" id="statusText" role="status" aria-live="polite" data-page-node-id="WAPKAMRVIIeHeTafGKqyCj">本轮候选已准备好，按空格键也可以开始。</p>
+        <p class="status" id="statusText">本轮候选已准备好，按空格键也可以开始。</p>
       </div>
     </section>
 
-    <aside class="side" aria-label="菜谱详情" data-page-node-id="du3NNWxKIYAeG8wpt5gy2q">
-      <div class="panel-title" data-page-node-id="AigoR2s0cLGLoOqUqQGEm3">
-        <h2 data-page-node-id="ASIJRVOtqIBnrzLs3Rfy0C">今日菜单</h2>
-        <span class="badge" id="countBadge" data-page-node-id="ESY6FA8QFnTi7sJOr9PgIZ">12 / 108 道</span>
+    <aside class="side" aria-label="菜谱详情">
+      <div class="panel-title">
+        <h2>今日菜单</h2>
+        <span class="badge" id="countBadge">12 / 108 道</span>
       </div>
-      <div class="food-photo" data-page-node-id="0k4aLBYYLjHutzIsj94G3f">
-        <img id="foodImage" alt="菜品图片" data-page-node-id="fXe6KL4OhjkkY0MeaEwpYC">
-        <div class="photo-fallback" id="photoFallback" aria-hidden="true" data-page-node-id="DxpPnRsNUViGLvG70gIgHI"></div>
+      <div class="food-photo">
+        <img id="foodImage" alt="菜品图片">
+        <div class="photo-fallback" id="photoFallback" aria-hidden="true"></div>
       </div>
-      <div class="result-card" id="resultCard" data-page-node-id="TpWfjZHVYWrraLYb3vxMoE">
-        <div class="result-label" data-page-node-id="fN2yzqHIhkn4cjEs7fIp77">TODAY'S PICK</div>
-        <h3 id="resultTitle" data-page-node-id="V87TH6nMmX88b53Ks264oG">可乐鸡翅根</h3>
-        <div class="meta" id="resultMeta" data-page-node-id="kFCBykFzZkxDWC6KwF8jg1">家常菜 · 用量可按人数增减</div>
+      <div class="result-card">
+        <div class="result-label">TODAY'S PICK</div>
+        <h3 id="resultTitle">可乐鸡翅根</h3>
+        <div class="meta" id="resultMeta">家常菜 · 用量可按人数增减</div>
       </div>
-      <div class="recipe-box" data-page-node-id="WKPzVziJBEmEkUIBLBLuBy">
-        <h4 data-page-node-id="hnsIeK467VwKYMRmeR2h67">需要的材料</h4>
-        <div class="ingredients" id="ingredients" data-page-node-id="PYAKqVXEjXcsGhtD8DRjPC"></div>
+      <div class="recipe-box">
+        <h4>需要的材料</h4>
+        <div class="ingredients" id="ingredients"></div>
       </div>
-      <div class="recipe-box" data-page-node-id="8utAttKpWdvDUBlBbpIWym">
-        <h4 data-page-node-id="iuK2L0A68Tbmc2ETtM0R0g">相应的做法</h4>
-        <ol class="steps" id="steps" data-page-node-id="f92yG6fZT65kzGCcwiuYkS"></ol>
+      <div class="recipe-box">
+        <h4>相应的做法</h4>
+        <ol class="steps" id="steps"></ol>
       </div>
     </aside>
   </section>
 </main>
 
-<div class="modal" id="pickModal" hidden role="dialog" aria-modal="true" aria-label="直接点菜" data-page-node-id="wsMaVLXs7DjhiEM5gB18ul">
-  <div class="modal-card" data-page-node-id="XEDof0qejNI7MUTjpVf0ZZ">
-    <div class="modal-head" data-page-node-id="oyq2T3Ho7RuFXhzYiRrLF8">
-      <h3 data-page-node-id="CyvbZRQTJyzJPgCnCXPvOa">想吃什么？直接选</h3>
-      <button class="modal-close" id="pickClose" type="button" aria-label="关闭" data-page-node-id="UptpBeLkcFqUUBJPNsvjFE">×</button>
+<div class="modal" id="pickModal" hidden role="dialog" aria-modal="true" aria-label="直接点菜">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3>想吃什么？直接选</h3>
+      <button class="modal-close" id="pickClose" type="button" aria-label="关闭">×</button>
     </div>
-    <input class="pick-search" id="pickSearch" type="text" placeholder="搜索菜名，如：排骨、粥、鸡" autocomplete="off" data-page-node-id="gckpHyFwBPBFFAx3lmrmXm">
-    <div class="pick-grid" id="pickGrid" data-page-node-id="qGqWJQSCC6NaOB4sSI5zMT"></div>
+    <input class="pick-search" id="pickSearch" type="text" placeholder="搜索菜名，如：排骨、粥、鸡" autocomplete="off">
+    <div class="pick-grid" id="pickGrid"></div>
   </div>
 </div>
-<script> const dishNames = [ "可乐鸡翅根","红烧肉","糖醋里脊","红烧带鱼","土豆炖排骨","油焖大虾","水煮肉片","锅包肉","黄焖鸡","烤鸭","四喜丸子","排骨铁锅炖","蒜香蒸排骨","虾仁蒸蛋","西红柿炒鸡蛋","青椒土豆丝","麻辣香锅","红烧茄子","蔬菜鲜虾饼","小炒牛肉","煎牛肉饼","鱼香肉丝","清炒包菜","蚂蚁上树","蒜薹炒肉","干锅花菜","白菜猪肉炖粉条","白灼虾","香菇油菜","黄瓜炒鸡蛋","京酱肉丝","干煸豆角","总督豆腐","蒜黄炒鸡蛋","清炒丝瓜","辣炒花蛤","葱烧豆腐","肉末豆腐","茄子烧豆角","蒜苔炒肉","青椒酿肉","黄瓜拉皮","凉拌菠菜","凉拌苦菊","腌萝卜","炸花生米","凉拌猪头肉","小葱拌豆腐","熏肠","芹菜花生","黄瓜拌油条","麻酱面藕","烙饼","米饭","鸡蛋挂面","面条","小米南瓜粥","饺子","炒馒头","豆角焖面","大米粥","玉米粥","椒盐花卷","小馄饨","牛肉板面","炒饼","麻酱凉皮","炒方便面","炸酱面","油条","豆腐脑","发面火烧","油泼面","椒盐葱花饼","馒头","披萨","煎蛋","酱肉包子","皮蛋瘦肉粥","脆皮糖糕","虾仁蛋炒饭","西红柿鸡蛋汤","白菜鸡蛋豆腐汤","冬瓜丸子汤","肉丸子青菜汤","紫菜蛋花汤","排骨玉米汤","酸辣汤","蛋挞","杨枝甘露","小蛋糕","柠檬水","鲜榨西瓜汁","鲜榨橙汁","火龙果香蕉奶昔","蓝莓香蕉奶昔","炸鸡柳","芒果奶昔","牛油果香蕉奶昔","切切西瓜","烤肠","榴莲","螺蛳粉","烤串烤肉","卤鸭脖","香辣小龙虾","火锅","火鸡面" ]; const categories = ["全部","家常菜","海鲜","凉菜","主食","汤粥","甜品饮品","夜宵"]; const wheelColors = ["#e2574c","#2f9c9c","#d47f22","#3f7fc4","#c14a7d","#4e9e52","#e2574c","#2f9c9c","#d47f22","#3f7fc4","#c14a7d","#4e9e52"]; const recipeDatabase = {
+<script> const dishNames = [ "可乐鸡翅根","红烧肉","糖醋里脊","红烧带鱼","土豆炖排骨","油焖大虾","水煮肉片","锅包肉","黄焖鸡","烤鸭","四喜丸子","排骨铁锅炖","蒜香蒸排骨","虾仁蒸蛋","西红柿炒鸡蛋","青椒土豆丝","麻辣香锅","红烧茄子","蔬菜鲜虾饼","小炒牛肉","煎牛肉饼","鱼香肉丝","清炒包菜","蚂蚁上树","蒜薹炒肉","干锅花菜","白菜猪肉炖粉条","白灼虾","香菇油菜","黄瓜炒鸡蛋","京酱肉丝","干煸豆角","总督豆腐","蒜黄炒鸡蛋","清炒丝瓜","辣炒花蛤","葱烧豆腐","肉末豆腐","茄子烧豆角","蒜苔炒肉","青椒酿肉","黄瓜拉皮","凉拌菠菜","凉拌苦菊","腌萝卜","炸花生米","凉拌猪头肉","小葱拌豆腐","熏肠","芹菜花生","黄瓜拌油条","麻酱面藕","烙饼","米饭","鸡蛋挂面","面条","小米南瓜粥","饺子","炒馒头","豆角焖面","大米粥","玉米粥","椒盐花卷","小馄饨","牛肉板面","炒饼","麻酱凉皮","炒方便面","炸酱面","油条","豆腐脑","发面火烧","油泼面","椒盐葱花饼","馒头","披萨","煎蛋","酱肉包子","皮蛋瘦肉粥","脆皮糖糕","虾仁蛋炒饭","西红柿鸡蛋汤","白菜鸡蛋豆腐汤","冬瓜丸子汤","肉丸子青菜汤","紫菜蛋花汤","排骨玉米汤","酸辣汤","蛋挞","杨枝甘露","小蛋糕","柠檬水","鲜榨西瓜汁","鲜榨橙汁","火龙果香蕉奶昔","蓝莓香蕉奶昔","炸鸡柳","芒果奶昔","牛油果香蕉奶昔","切切西瓜","烤肠","榴莲","螺蛳粉","烤串烤肉","卤鸭脖","香辣小龙虾","火锅","火鸡面" ]; const categories = ["全部","家常菜","海鲜","凉菜","主食","汤粥","甜品饮品","夜宵"]; const wheelColors = ["#7cc7a2","#f4a57e","#86bcdb","#e9c472","#dfa3b3","#6db7ac","#f2b27e","#97b1d6","#a8cf8d","#e69b9b","#b6a9da","#cdc373"]; const recipeDatabase = {
 "可乐鸡翅根": { source:"下厨房·高赞家常菜谱", ingredients:["鸡翅根 500克","可乐 330毫升（1罐）","姜片 15克","葱段 20克","生抽 20毫升","老抽 5毫升","料酒 15毫升","熟白芝麻 3克"], steps:["鸡翅根洗净，两面各划两刀便于入味，冷水下锅加姜片、料酒焯水，煮沸撇去浮沫后捞出沥干。","锅中放少许油，下鸡翅根中火煎到两面微黄。","放姜片、葱段炒香，加生抽、老抽翻炒上色，倒入可乐，液面刚好没过鸡翅。","大火烧开后转中小火焖15分钟，开盖加2克盐，大火把汤汁收浓裹匀，撒白芝麻出锅。"]},
 "红烧肉": { source:"东方美食·传统技法（炒糖色）", ingredients:["带皮五花肉 600克","冰糖 30克","生抽 20毫升","老抽 8毫升","料酒 20毫升","葱段 20克、姜片15克","八角2个、香叶2片","盐 3克","热水 适量"], steps:["五花肉切成2.5厘米见方的块，冷水下锅加料酒、姜片焯水3分钟，用温水洗净沥干。","锅中放少许油下冰糖，中小火炒到枣红色、起密集小泡，立刻倒入肉块快速翻炒上色。","下葱姜、八角、香叶炒香，烹入料酒，加生抽、老抽炒匀。","加入没过肉块的热水，大火烧开转小火炖50–60分钟至软烂。","开盖加盐，大火把汤汁收浓、油亮裹在肉上即可。"]},
 "糖醋里脊": { source:"下厨房·高赞家常菜谱", ingredients:["猪里脊 350克","玉米淀粉 80克","面粉 20克","白糖 40克","米醋 30毫升","番茄酱 20克","鸡蛋 1个（取蛋清）","料酒 10毫升","白芝麻 3克"], steps:["里脊切成0.8厘米粗条，加盐2克、料酒、蛋清抓匀腌15分钟。","淀粉加面粉和适量清水调成能挂住肉条的稠糊，把肉条裹匀。","油温六成热（约170℃）逐条下锅炸定型捞出，升到八成热（约190℃）复炸到金黄酥脆。","另起锅放白糖、米醋、番茄酱、生抽5毫升、清水30毫升，小火熬到浓稠起泡。","倒入炸好的里脊快速翻匀裹汁，撒白芝麻出锅，趁热吃外酥里嫩。"]},
@@ -385,8 +338,6 @@ body.modal-open { overflow:hidden; }
 }; function getCategory(name) { if (/蛋挞|甘露|蛋糕|柠檬水|汁|奶昔|切切西瓜|榴莲/.test(name)) return "甜品饮品"; if (/汤|粥|豆腐脑/.test(name)) return "汤粥"; if (/凉拌|腌萝卜|花生米|猪头肉|熏肠|芹菜花生|黄瓜拌油条|麻酱面藕|黄瓜拉皮|小葱拌豆腐/.test(name)) return "凉菜"; if (/炸鸡柳|烤肠|螺蛳粉|烤串|鸭脖|小龙虾|火锅|火鸡面/.test(name)) return "夜宵"; if (/带鱼|大虾|白灼虾|虾仁|花蛤|鲜虾/.test(name)) return "海鲜"; if (/饼|米饭|挂面|面条|粥|饺子|馒头|焖面|花卷|馄饨|板面|凉皮|方便面|炸酱面|油条|火烧|油泼面|包子|蛋炒饭|披萨|糖糕/.test(name)) return "主食"; return "家常菜"; }
 // recipeDatabase above holds per-dish ingredients and steps; no generic templates
 
-const localImageFiles = {"可乐鸡翅根":"assets/photos/001.jpg","红烧肉":"assets/photos/002.jpg","糖醋里脊":"assets/photos/003.jpg","红烧带鱼":"assets/photos/004.jpg","土豆炖排骨":"assets/photos/005.jpg","油焖大虾":"assets/photos/006.jpg","水煮肉片":"assets/photos/007.jpg","锅包肉":"assets/photos/008.jpg","黄焖鸡":"assets/photos/009.jpg","烤鸭":"assets/photos/010.jpg","四喜丸子":"assets/photos/011.jpg","排骨铁锅炖":"assets/photos/012.jpg","蒜香蒸排骨":"assets/photos/013.jpg","虾仁蒸蛋":"assets/photos/014.jpg","西红柿炒鸡蛋":"assets/photos/015.jpg","青椒土豆丝":"assets/photos/016.jpg","麻辣香锅":"assets/photos/017.jpg","红烧茄子":"assets/photos/018.jpg","蔬菜鲜虾饼":"assets/photos/019.jpg","小炒牛肉":"assets/photos/020.jpg","煎牛肉饼":"assets/photos/021.jpg","鱼香肉丝":"assets/photos/022.jpg","清炒包菜":"assets/photos/023.jpg","蚂蚁上树":"assets/photos/024.jpg","蒜薹炒肉":"assets/photos/025.jpg","干锅花菜":"assets/photos/026.jpg","白菜猪肉炖粉条":"assets/photos/027.jpg","白灼虾":"assets/photos/028.jpg","香菇油菜":"assets/photos/029.jpg","黄瓜炒鸡蛋":"assets/photos/030.jpg","京酱肉丝":"assets/photos/031.jpg","干煸豆角":"assets/photos/032.jpg","总督豆腐":"assets/photos/033.jpg","蒜黄炒鸡蛋":"assets/photos/034.jpg","清炒丝瓜":"assets/photos/035.jpg","辣炒花蛤":"assets/photos/036.jpg","葱烧豆腐":"assets/photos/037.jpg","肉末豆腐":"assets/photos/038.jpg","茄子烧豆角":"assets/photos/039.jpg","蒜苔炒肉":"assets/photos/040.jpg","青椒酿肉":"assets/photos/041.jpg","黄瓜拉皮":"assets/photos/042.jpg","凉拌菠菜":"assets/photos/043.jpg","凉拌苦菊":"assets/photos/044.jpg","腌萝卜":"assets/photos/045.jpg","炸花生米":"assets/photos/046.jpg","凉拌猪头肉":"assets/photos/047.jpg","小葱拌豆腐":"assets/photos/048.jpg","熏肠":"assets/photos/049.jpg","芹菜花生":"assets/photos/050.jpg","黄瓜拌油条":"assets/photos/051.jpg","麻酱面藕":"assets/photos/052.jpg","烙饼":"assets/photos/053.jpg","米饭":"assets/photos/054.jpg","鸡蛋挂面":"assets/photos/055.jpg","面条":"assets/photos/056.jpg","小米南瓜粥":"assets/photos/057.jpg","饺子":"assets/photos/058.jpg","炒馒头":"assets/photos/059.jpg","豆角焖面":"assets/photos/060.jpg","大米粥":"assets/photos/061.jpg","玉米粥":"assets/photos/062.jpg","椒盐花卷":"assets/photos/063.jpg","小馄饨":"assets/photos/064.jpg","牛肉板面":"assets/photos/065.jpg","炒饼":"assets/photos/066.jpg","麻酱凉皮":"assets/photos/067.jpg","炒方便面":"assets/photos/068.jpg","炸酱面":"assets/photos/069.jpg","油条":"assets/photos/070.jpg","豆腐脑":"assets/photos/071.jpg","发面火烧":"assets/photos/072.jpg","油泼面":"assets/photos/073.jpg","椒盐葱花饼":"assets/photos/074.jpg","馒头":"assets/photos/075.jpg","披萨":"assets/photos/076.jpg","煎蛋":"assets/photos/077.jpg","酱肉包子":"assets/photos/078.jpg","皮蛋瘦肉粥":"assets/photos/079.jpg","脆皮糖糕":"assets/photos/080.jpg","虾仁蛋炒饭":"assets/photos/081.jpg","西红柿鸡蛋汤":"assets/photos/082.jpg","白菜鸡蛋豆腐汤":"assets/photos/083.jpg","冬瓜丸子汤":"assets/photos/084.jpg","肉丸子青菜汤":"assets/photos/085.jpg","紫菜蛋花汤":"assets/photos/086.jpg","排骨玉米汤":"assets/photos/087.jpg","酸辣汤":"assets/photos/088.jpg","蛋挞":"assets/photos/089.jpg","杨枝甘露":"assets/photos/090.jpg","小蛋糕":"assets/photos/091.jpg","柠檬水":"assets/photos/092.jpg","鲜榨西瓜汁":"assets/photos/093.jpg","鲜榨橙汁":"assets/photos/094.jpg","火龙果香蕉奶昔":"assets/photos/095.jpg","蓝莓香蕉奶昔":"assets/photos/096.jpg","炸鸡柳":"assets/photos/097.jpg","芒果奶昔":"assets/photos/098.jpg","牛油果香蕉奶昔":"assets/photos/099.jpg","切切西瓜":"assets/photos/100.jpg","烤肠":"assets/photos/101.jpg","榴莲":"assets/photos/102.jpg","螺蛳粉":"assets/photos/103.jpg","烤串烤肉":"assets/photos/104.jpg","卤鸭脖":"assets/photos/105.jpg","香辣小龙虾":"assets/photos/106.jpg","火锅":"assets/photos/107.jpg","火鸡面":"assets/photos/108.jpg"}; function imageUrl(name) { return localImageFiles[name] || ""; } const recipes = dishNames.map((name) => { const db = recipeDatabase[name]; return { name, category: getCategory(name), ingredients: db.ingredients, steps: db.steps, source: db.source, image: imageUrl(name) }; }); const wheel = document.getElementById("wheel"); const SVG_NS = "http://www.w3.org/2000/svg"; const wheelRotate = document.getElementById("wheelRotate");
-const wheelSlices = document.getElementById("wheelSlices");
-const wheelLabels = document.getElementById("wheelLabels"); const chips = document.getElementById("chips"); const spinBtn = document.getElementById("spinBtn"); const shuffleBtn = document.getElementById("shuffleBtn"); const pickBtn = document.getElementById("pickBtn"); const pickModal = document.getElementById("pickModal"); const pickClose = document.getElementById("pickClose"); const pickSearch = document.getElementById("pickSearch"); const pickGrid = document.getElementById("pickGrid"); const statusText = document.getElementById("statusText"); const countBadge = document.getElementById("countBadge"); const resultTitle = document.getElementById("resultTitle"); const resultCard = document.getElementById("resultCard"); const resultMeta = document.getElementById("resultMeta"); const ingredients = document.getElementById("ingredients"); const steps = document.getElementById("steps"); const foodImage = document.getElementById("foodImage"); const photoFallback = document.getElementById("photoFallback"); let activeCategory = "全部"; let currentBatch = []; let currentRotation = 0; let sliceNodes = []; let sliceLabels = []; let spinning = false; function shuffle(items) { const copy = items.slice(); for (let index = copy.length - 1; index > 0; index -= 1) { const swapIndex = Math.floor(Math.random() * (index + 1)); [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]]; } return copy; } function categoryPool() { return activeCategory === "全部" ? recipes : recipes.filter((recipe) => recipe.category === activeCategory); } function createChips() { chips.innerHTML = ""; categories.forEach((category) => { const button = document.createElement("button"); button.className = `chip${category === activeCategory ? " is-active" : ""}`; button.type = "button"; button.textContent = category; button.addEventListener("click", () => { if (spinning || activeCategory === category) return; activeCategory = category; createChips(); refreshBatch(); }); chips.appendChild(button); }); } function renderWheel() { const n = currentBatch.length; const sliceStep = 360 / n; const CX = 300, CY = 300, R = 296; const polar = (deg, r) => { const a = deg * Math.PI / 180; return [CX + r * Math.cos(a), CY + r * Math.sin(a)]; }; wheelSlices.innerHTML = ""; wheelLabels.innerHTML = ""; sliceNodes = []; sliceLabels = []; currentBatch.forEach((recipe, index) => { const a0 = -90 + index * sliceStep; const a1 = a0 + sliceStep; const [x0, y0] = polar(a0, R); const [x1, y1] = polar(a1, R); const large = sliceStep > 180 ? 1 : 0; const sector = document.createElementNS(SVG_NS, "path"); sector.setAttribute("class", "slice"); sector.setAttribute("d", `M${CX} ${CY} L${x0.toFixed(2)} ${y0.toFixed(2)} A${R} ${R} 0 ${large} 1 ${x1.toFixed(2)} ${y1.toFixed(2)} Z`); sector.setAttribute("fill", wheelColors[index % wheelColors.length]); wheelSlices.appendChild(sector); sliceNodes.push(sector); const mid = a0 + sliceStep / 2; const [tx, ty] = polar(mid, R * 0.62); const dishName = recipe.name; let labelLines; let labelSize; if (dishName.length <= 4) { labelLines = [dishName]; labelSize = 21; } else { const cut = Math.ceil(dishName.length / 2); labelLines = [dishName.slice(0, cut), dishName.slice(cut)]; labelSize = dishName.length > 6 ? 16 : 18; } const label = document.createElementNS(SVG_NS, "text"); label.setAttribute("x", tx.toFixed(2)); label.setAttribute("y", ty.toFixed(2)); label.setAttribute("text-anchor", "middle"); label.setAttribute("dominant-baseline", "central"); label.setAttribute("class", "slice-text"); labelLines.forEach((lineText, lineIndex) => { const tspan = document.createElementNS(SVG_NS, "tspan"); tspan.setAttribute("x", tx.toFixed(2)); tspan.setAttribute("dy", labelLines.length === 1 ? "0" : (lineIndex === 0 ? "-0.58em" : "1.16em")); tspan.setAttribute("font-size", labelSize); tspan.textContent = lineText; label.appendChild(tspan); }); wheelLabels.appendChild(label); sliceLabels.push(label); }); const restingRotation = -(180 / n); wheelRotate.classList.add("is-resetting"); applyRotation(restingRotation + 360 * Math.round(currentRotation / 360)); requestAnimationFrame(() => requestAnimationFrame(() => wheelRotate.classList.remove("is-resetting"))); } function showRecipe(recipe) { resultTitle.textContent = recipe.name; resultMeta.innerHTML = `<span class="tag">${recipe.category}</span><span>菜谱参考：${recipe.source}</span>`; photoFallback.textContent = recipe.name; resultCard.classList.remove("is-new"); void resultCard.offsetWidth; resultCard.classList.add("is-new"); ingredients.innerHTML = recipe.ingredients.map((item) => `<span class="ingredient">${item}</span>`).join(""); steps.innerHTML = recipe.steps.map((item) => `<li>${item}</li>`).join(""); const requestedImage = recipe.image; foodImage.dataset.pending = requestedImage; foodImage.classList.remove("is-ready"); if (!requestedImage) { foodImage.hidden = true; return; } const preloader = new Image(); preloader.onload = () => { if (foodImage.dataset.pending !== requestedImage) return; foodImage.alt = `${recipe.name}成品图`; foodImage.src = requestedImage; foodImage.hidden = false; requestAnimationFrame(() => foodImage.classList.add("is-ready")); }; preloader.onerror = () => { if (foodImage.dataset.pending === requestedImage) foodImage.hidden = true; }; preloader.src = requestedImage; } function refreshBatch() { const pool = categoryPool(); currentBatch = shuffle(pool).slice(0, Math.min(12, pool.length)); renderWheel(); showRecipe(currentBatch[0]); countBadge.textContent = `${currentBatch.length} / ${pool.length} 道`; statusText.textContent = `已切换到“${activeCategory}”，本轮候选已更新。`; } function applyRotation(deg) { currentRotation = deg; wheelRotate.style.transform = `rotate(${deg}deg)`; const counter = `rotate(${-deg}deg)`; sliceLabels.forEach((node) => { node.style.transform = counter; }); } function alignRotation(index) { const sliceStep = 360 / currentBatch.length; const desiredMod = ((-(index + .5) * sliceStep) % 360 + 360) % 360; const currentMod = ((currentRotation % 360) + 360) % 360; const delta = ((desiredMod - currentMod) % 360 + 360) % 360; return currentRotation + delta + 360 * (5 + Math.floor(Math.random() * 3)); } function setControlsDisabled(disabled) { spinning = disabled; spinBtn.disabled = disabled; shuffleBtn.disabled = disabled; pickBtn.disabled = disabled; document.body.classList.toggle("is-spinning", disabled); } function rotateTo(index, pickedName) { const target = currentBatch[index]; sliceNodes.forEach((node) => node.classList.remove("is-winner")); applyRotation(alignRotation(index)); let finished = false; let guardTimer = 0; const finish = () => { if (finished) return; finished = true; clearTimeout(guardTimer); wheel.removeEventListener("transitionend", onTransitionEnd); setControlsDisabled(false); const winnerNode = sliceNodes[index]; if (winnerNode) winnerNode.classList.add("is-winner"); showRecipe(target); statusText.textContent = pickedName ? `已为你锁定“${target.name}”，菜谱在右侧。` : `今天就吃“${target.name}”！不满意可以再转一次。`; }; const onTransitionEnd = (event) => { if (event.target === wheelRotate) finish(); }; wheel.addEventListener("transitionend", onTransitionEnd); guardTimer = setTimeout(finish, 5000); } function spin() { if (spinning || !currentBatch.length) return; setControlsDisabled(true); statusText.textContent = "正在认真替你挑菜……"; const index = Math.floor(Math.random() * currentBatch.length); rotateTo(index); } function spinToName(name) { if (spinning) return; const picked = recipes.find((recipe) => recipe.name === name); if (!picked) return; setControlsDisabled(true); statusText.textContent = `好的，这就为你转到“${picked.name}”……`; const others = shuffle(recipes.filter((recipe) => recipe.name !== name)); currentBatch = shuffle([picked, ...others.slice(0, 11)]); renderWheel(); const index = currentBatch.findIndex((recipe) => recipe.name === name); requestAnimationFrame(() => requestAnimationFrame(() => rotateTo(index, name))); } spinBtn.addEventListener("click", spin); shuffleBtn.addEventListener("click", () => { if (!spinning) refreshBatch(); }); function openPick() { if (spinning) return; pickSearch.value = ""; filterPick(""); pickModal.hidden = false; document.body.classList.add("modal-open"); pickSearch.focus(); } function closePick() { pickModal.hidden = true; document.body.classList.remove("modal-open"); } function filterPick(keyword) { const key = keyword.trim(); pickGrid.querySelectorAll(".pick-group").forEach((group) => { let visibleCount = 0; group.querySelectorAll(".pick-item").forEach((item) => { const matched = !key || item.dataset.name.includes(key); item.style.display = matched ? "" : "none"; if (matched) visibleCount += 1; }); group.style.display = visibleCount ? "" : "none"; }); } function buildPickList() { categories.filter((category) => category !== "全部").forEach((category) => { const group = document.createElement("div"); group.className = "pick-group"; const groupTitle = document.createElement("div"); groupTitle.className = "pick-group-title"; groupTitle.textContent = category; group.appendChild(groupTitle); recipes.filter((recipe) => recipe.category === category).forEach((recipe) => { const item = document.createElement("button"); item.type = "button"; item.className = "pick-item"; item.dataset.name = recipe.name; item.textContent = recipe.name; item.addEventListener("click", () => { closePick(); spinToName(recipe.name); }); group.appendChild(item); }); pickGrid.appendChild(group); }); } pickBtn.addEventListener("click", openPick); pickClose.addEventListener("click", closePick); pickModal.addEventListener("click", (event) => { if (event.target === pickModal) closePick(); }); pickSearch.addEventListener("input", () => filterPick(pickSearch.value)); window.addEventListener("keydown", (event) => { if (event.key === "Escape" && !pickModal.hidden) { event.preventDefault(); closePick(); } }); buildPickList(); window.addEventListener("keydown", (event) => { if (event.code === "Space" && !event.repeat) { event.preventDefault(); spin(); } }); createChips(); refreshBatch(); </script>
+const localImageFiles = {"可乐鸡翅根":"assets/photos/001.jpg","红烧肉":"assets/photos/002.jpg","糖醋里脊":"assets/photos/003.jpg","红烧带鱼":"assets/photos/004.jpg","土豆炖排骨":"assets/photos/005.jpg","油焖大虾":"assets/photos/006.jpg","水煮肉片":"assets/photos/007.jpg","锅包肉":"assets/photos/008.jpg","黄焖鸡":"assets/photos/009.jpg","烤鸭":"assets/photos/010.jpg","四喜丸子":"assets/photos/011.jpg","排骨铁锅炖":"assets/photos/012.jpg","蒜香蒸排骨":"assets/photos/013.jpg","虾仁蒸蛋":"assets/photos/014.jpg","西红柿炒鸡蛋":"assets/photos/015.jpg","青椒土豆丝":"assets/photos/016.jpg","麻辣香锅":"assets/photos/017.jpg","红烧茄子":"assets/photos/018.jpg","蔬菜鲜虾饼":"assets/photos/019.jpg","小炒牛肉":"assets/photos/020.jpg","煎牛肉饼":"assets/photos/021.jpg","鱼香肉丝":"assets/photos/022.jpg","清炒包菜":"assets/photos/023.jpg","蚂蚁上树":"assets/photos/024.jpg","蒜薹炒肉":"assets/photos/025.jpg","干锅花菜":"assets/photos/026.jpg","白菜猪肉炖粉条":"assets/photos/027.jpg","白灼虾":"assets/photos/028.jpg","香菇油菜":"assets/photos/029.jpg","黄瓜炒鸡蛋":"assets/photos/030.jpg","京酱肉丝":"assets/photos/031.jpg","干煸豆角":"assets/photos/032.jpg","总督豆腐":"assets/photos/033.jpg","蒜黄炒鸡蛋":"assets/photos/034.jpg","清炒丝瓜":"assets/photos/035.jpg","辣炒花蛤":"assets/photos/036.jpg","葱烧豆腐":"assets/photos/037.jpg","肉末豆腐":"assets/photos/038.jpg","茄子烧豆角":"assets/photos/039.jpg","蒜苔炒肉":"assets/photos/040.jpg","青椒酿肉":"assets/photos/041.jpg","黄瓜拉皮":"assets/photos/042.jpg","凉拌菠菜":"assets/photos/043.jpg","凉拌苦菊":"assets/photos/044.jpg","腌萝卜":"assets/photos/045.jpg","炸花生米":"assets/photos/046.jpg","凉拌猪头肉":"assets/photos/047.jpg","小葱拌豆腐":"assets/photos/048.jpg","熏肠":"assets/photos/049.jpg","芹菜花生":"assets/photos/050.jpg","黄瓜拌油条":"assets/photos/051.jpg","麻酱面藕":"assets/photos/052.jpg","烙饼":"assets/photos/053.jpg","米饭":"assets/photos/054.jpg","鸡蛋挂面":"assets/photos/055.jpg","面条":"assets/photos/056.jpg","小米南瓜粥":"assets/photos/057.jpg","饺子":"assets/photos/058.jpg","炒馒头":"assets/photos/059.jpg","豆角焖面":"assets/photos/060.jpg","大米粥":"assets/photos/061.jpg","玉米粥":"assets/photos/062.jpg","椒盐花卷":"assets/photos/063.jpg","小馄饨":"assets/photos/064.jpg","牛肉板面":"assets/photos/065.jpg","炒饼":"assets/photos/066.jpg","麻酱凉皮":"assets/photos/067.jpg","炒方便面":"assets/photos/068.jpg","炸酱面":"assets/photos/069.jpg","油条":"assets/photos/070.jpg","豆腐脑":"assets/photos/071.jpg","发面火烧":"assets/photos/072.jpg","油泼面":"assets/photos/073.jpg","椒盐葱花饼":"assets/photos/074.jpg","馒头":"assets/photos/075.jpg","披萨":"assets/photos/076.jpg","煎蛋":"assets/photos/077.jpg","酱肉包子":"assets/photos/078.jpg","皮蛋瘦肉粥":"assets/photos/079.jpg","脆皮糖糕":"assets/photos/080.jpg","虾仁蛋炒饭":"assets/photos/081.jpg","西红柿鸡蛋汤":"assets/photos/082.jpg","白菜鸡蛋豆腐汤":"assets/photos/083.jpg","冬瓜丸子汤":"assets/photos/084.jpg","肉丸子青菜汤":"assets/photos/085.jpg","紫菜蛋花汤":"assets/photos/086.jpg","排骨玉米汤":"assets/photos/087.jpg","酸辣汤":"assets/photos/088.jpg","蛋挞":"assets/photos/089.jpg","杨枝甘露":"assets/photos/090.jpg","小蛋糕":"assets/photos/091.jpg","柠檬水":"assets/photos/092.jpg","鲜榨西瓜汁":"assets/photos/093.jpg","鲜榨橙汁":"assets/photos/094.jpg","火龙果香蕉奶昔":"assets/photos/095.jpg","蓝莓香蕉奶昔":"assets/photos/096.jpg","炸鸡柳":"assets/photos/097.jpg","芒果奶昔":"assets/photos/098.jpg","牛油果香蕉奶昔":"assets/photos/099.jpg","切切西瓜":"assets/photos/100.jpg","烤肠":"assets/photos/101.jpg","榴莲":"assets/photos/102.jpg","螺蛳粉":"assets/photos/103.jpg","烤串烤肉":"assets/photos/104.jpg","卤鸭脖":"assets/photos/105.jpg","香辣小龙虾":"assets/photos/106.jpg","火锅":"assets/photos/107.jpg","火鸡面":"assets/photos/108.jpg"}; function imageUrl(name) { return localImageFiles[name] || ""; } const recipes = dishNames.map((name) => { const db = recipeDatabase[name]; return { name, category: getCategory(name), ingredients: db.ingredients, steps: db.steps, source: db.source, image: imageUrl(name) }; }); const wheel = document.getElementById("wheel"); const SVG_NS = "http://www.w3.org/2000/svg"; const wheelRotate = document.getElementById("wheelRotate"); const chips = document.getElementById("chips"); const spinBtn = document.getElementById("spinBtn"); const shuffleBtn = document.getElementById("shuffleBtn"); const pickBtn = document.getElementById("pickBtn"); const pickModal = document.getElementById("pickModal"); const pickClose = document.getElementById("pickClose"); const pickSearch = document.getElementById("pickSearch"); const pickGrid = document.getElementById("pickGrid"); const statusText = document.getElementById("statusText"); const countBadge = document.getElementById("countBadge"); const resultTitle = document.getElementById("resultTitle"); const resultMeta = document.getElementById("resultMeta"); const ingredients = document.getElementById("ingredients"); const steps = document.getElementById("steps"); const foodImage = document.getElementById("foodImage"); const photoFallback = document.getElementById("photoFallback"); let activeCategory = "全部"; let currentBatch = []; let currentRotation = 0; let spinning = false; function shuffle(items) { const copy = items.slice(); for (let index = copy.length - 1; index > 0; index -= 1) { const swapIndex = Math.floor(Math.random() * (index + 1)); [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]]; } return copy; } function categoryPool() { return activeCategory === "全部" ? recipes : recipes.filter((recipe) => recipe.category === activeCategory); } function createChips() { chips.innerHTML = ""; categories.forEach((category) => { const button = document.createElement("button"); button.className = `chip${category === activeCategory ? " is-active" : ""}`; button.type = "button"; button.textContent = category; button.addEventListener("click", () => { if (spinning || activeCategory === category) return; activeCategory = category; createChips(); refreshBatch(); }); chips.appendChild(button); }); } function renderWheel() { const n = currentBatch.length; const sliceStep = 360 / n; const CX = 300, CY = 300, R = 296; const polar = (deg, r) => { const a = deg * Math.PI / 180; return [CX + r * Math.cos(a), CY + r * Math.sin(a)]; }; wheelRotate.innerHTML = ""; currentBatch.forEach((recipe, index) => { const a0 = -90 + index * sliceStep; const a1 = a0 + sliceStep; const [x0, y0] = polar(a0, R); const [x1, y1] = polar(a1, R); const large = sliceStep > 180 ? 1 : 0; const sector = document.createElementNS(SVG_NS, "path"); sector.setAttribute("d", `M${CX} ${CY} L${x0.toFixed(2)} ${y0.toFixed(2)} A${R} ${R} 0 ${large} 1 ${x1.toFixed(2)} ${y1.toFixed(2)} Z`); sector.setAttribute("fill", wheelColors[index % wheelColors.length]); wheelRotate.appendChild(sector); const mid = a0 + sliceStep / 2; const [tx, ty] = polar(mid, R * 0.62); const dishName = recipe.name; let labelLines; let labelSize; if (dishName.length <= 4) { labelLines = [dishName]; labelSize = 21; } else { const cut = Math.ceil(dishName.length / 2); labelLines = [dishName.slice(0, cut), dishName.slice(cut)]; labelSize = dishName.length > 6 ? 16 : 18; } const label = document.createElementNS(SVG_NS, "text"); label.setAttribute("x", tx.toFixed(2)); label.setAttribute("y", ty.toFixed(2)); label.setAttribute("text-anchor", "middle"); label.setAttribute("dominant-baseline", "central"); label.setAttribute("class", "slice-text"); labelLines.forEach((lineText, lineIndex) => { const tspan = document.createElementNS(SVG_NS, "tspan"); tspan.setAttribute("x", tx.toFixed(2)); tspan.setAttribute("dy", labelLines.length === 1 ? "0" : (lineIndex === 0 ? "-0.58em" : "1.16em")); tspan.setAttribute("font-size", labelSize); tspan.textContent = lineText; label.appendChild(tspan); }); wheelRotate.appendChild(label); }); const restingRotation = -(180 / n); wheelRotate.classList.add("is-resetting"); wheelRotate.style.transform = `rotate(${restingRotation}deg)`; currentRotation = restingRotation; requestAnimationFrame(() => requestAnimationFrame(() => wheelRotate.classList.remove("is-resetting"))); } function showRecipe(recipe) { resultTitle.textContent = recipe.name; resultMeta.textContent = `${recipe.category} · 菜谱参考：${recipe.source} · 用量可按人数增减`; ingredients.innerHTML = recipe.ingredients.map((item) => `<span class="ingredient">${item}</span>`).join(""); steps.innerHTML = recipe.steps.map((item) => `<li>${item}</li>`).join(""); const requestedImage = recipe.image; foodImage.dataset.pending = requestedImage; if (!requestedImage) { foodImage.hidden = true; return; } const preloader = new Image(); preloader.onload = () => { if (foodImage.dataset.pending !== requestedImage) return; foodImage.alt = `${recipe.name}成品图`; foodImage.src = requestedImage; foodImage.hidden = false; }; preloader.onerror = () => { if (foodImage.dataset.pending === requestedImage) foodImage.hidden = true; }; preloader.src = requestedImage; } function refreshBatch() { const pool = categoryPool(); currentBatch = shuffle(pool).slice(0, Math.min(12, pool.length)); renderWheel(); showRecipe(currentBatch[0]); countBadge.textContent = `${currentBatch.length} / ${pool.length} 道`; statusText.textContent = `已切换到“${activeCategory}”，本轮候选已更新。`; } function alignRotation(index) { const sliceStep = 360 / currentBatch.length; const desiredMod = ((-(index + .5) * sliceStep) % 360 + 360) % 360; const currentMod = ((currentRotation % 360) + 360) % 360; const delta = ((desiredMod - currentMod) % 360 + 360) % 360; return currentRotation + delta + 360 * (5 + Math.floor(Math.random() * 3)); } function setControlsDisabled(disabled) { spinning = disabled; spinBtn.disabled = disabled; shuffleBtn.disabled = disabled; pickBtn.disabled = disabled; } function rotateTo(index, pickedName) { const target = currentBatch[index]; const nextRotation = alignRotation(index); wheelRotate.style.transform = `rotate(${nextRotation}deg)`; currentRotation = nextRotation; const finish = () => { setControlsDisabled(false); showRecipe(target); statusText.textContent = pickedName ? `已为你锁定“${target.name}”，菜谱在右侧。` : `今天就吃“${target.name}”！不满意可以再转一次。`; wheel.removeEventListener("transitionend", finish); }; wheel.addEventListener("transitionend", finish); } function spin() { if (spinning || !currentBatch.length) return; setControlsDisabled(true); statusText.textContent = "正在认真替你挑菜……"; const index = Math.floor(Math.random() * currentBatch.length); rotateTo(index); } function spinToName(name) { if (spinning) return; const picked = recipes.find((recipe) => recipe.name === name); if (!picked) return; setControlsDisabled(true); statusText.textContent = `好的，这就为你转到“${picked.name}”……`; const others = shuffle(recipes.filter((recipe) => recipe.name !== name)); currentBatch = shuffle([picked, ...others.slice(0, 11)]); renderWheel(); const index = currentBatch.findIndex((recipe) => recipe.name === name); requestAnimationFrame(() => requestAnimationFrame(() => rotateTo(index, name))); } spinBtn.addEventListener("click", spin); shuffleBtn.addEventListener("click", () => { if (!spinning) refreshBatch(); }); function openPick() { if (spinning) return; pickSearch.value = ""; filterPick(""); pickModal.hidden = false; document.body.classList.add("modal-open"); pickSearch.focus(); } function closePick() { pickModal.hidden = true; document.body.classList.remove("modal-open"); } function filterPick(keyword) { const key = keyword.trim(); pickGrid.querySelectorAll(".pick-group").forEach((group) => { let visibleCount = 0; group.querySelectorAll(".pick-item").forEach((item) => { const matched = !key || item.dataset.name.includes(key); item.style.display = matched ? "" : "none"; if (matched) visibleCount += 1; }); group.style.display = visibleCount ? "" : "none"; }); } function buildPickList() { categories.filter((category) => category !== "全部").forEach((category) => { const group = document.createElement("div"); group.className = "pick-group"; const groupTitle = document.createElement("div"); groupTitle.className = "pick-group-title"; groupTitle.textContent = category; group.appendChild(groupTitle); recipes.filter((recipe) => recipe.category === category).forEach((recipe) => { const item = document.createElement("button"); item.type = "button"; item.className = "pick-item"; item.dataset.name = recipe.name; item.textContent = recipe.name; item.addEventListener("click", () => { closePick(); spinToName(recipe.name); }); group.appendChild(item); }); pickGrid.appendChild(group); }); } pickBtn.addEventListener("click", openPick); pickClose.addEventListener("click", closePick); pickModal.addEventListener("click", (event) => { if (event.target === pickModal) closePick(); }); pickSearch.addEventListener("input", () => filterPick(pickSearch.value)); window.addEventListener("keydown", (event) => { if (event.key === "Escape" && !pickModal.hidden) { event.preventDefault(); closePick(); } }); buildPickList(); window.addEventListener("keydown", (event) => { if (event.code === "Space" && !event.repeat) { event.preventDefault(); spin(); } }); createChips(); refreshBatch(); </script>
 </body>
 </html>
