@@ -1,380 +1,303 @@
-<html lang="zh-CN"> <head> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1"> <title>今天吃什么｜菜谱转盘</title> <style> :root { --ink: #263028; --muted: #737a70; --paper: #f7f3e9; --card: rgba(255, 253, 247, 0.84); --line: rgba(52, 70, 53, 0.12); --green: #315c45; --green-2: #4f8064; --orange: #d97845; --shadow: 0 28px 80px rgba(53, 56, 42, 0.18); --wheel-size: min(70vw, 530px); --rotation: 0deg; }
-{ box-sizing: border-box; }
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>今天吃什么｜菜谱转盘</title>
+<style>
+:root {
+  --ink:#234034; --muted:#7c8a80;
+  --brand:#36a97c; --brand-d:#2b8f66; --brand-soft:#e9f6ef;
+  --accent:#ff9a62; --accent-d:#f4854a;
+  --card:#ffffff; --line:rgba(45,92,68,.10);
+  --shadow:0 14px 44px rgba(45,100,72,.10);
+  --shadow-sm:0 6px 20px rgba(45,100,72,.08);
+}
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
 body {
-margin: 0;
-min-height: 100vh;
-color: var(--ink);
-font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
-background:
-radial-gradient(circle at 12% 8%, rgba(226, 173, 93, 0.22), transparent 27%),
-radial-gradient(circle at 92% 16%, rgba(87, 134, 103, 0.17), transparent 28%),
-linear-gradient(145deg, #eee8d9 0%, #f8f5ed 48%, #e8eee4 100%);
+  margin:0; min-height:100vh; color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  background:
+    radial-gradient(circle at 8% 4%, rgba(121,199,162,.28), transparent 38%),
+    radial-gradient(circle at 96% 8%, rgba(255,154,98,.18), transparent 36%),
+    linear-gradient(165deg,#f4faf6 0%,#eef6f1 48%,#fdf3ea 100%);
+  background-attachment:fixed; line-height:1.5; -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  padding-bottom:env(safe-area-inset-bottom);
 }
-body::before {
-content: "";
-position: fixed;
-inset: 0;
-pointer-events: none;
-opacity: 0.25;
-background-image: linear-gradient(rgba(49,92,69,.055) 1px, transparent 1px), linear-gradient(90deg, rgba(49,92,69,.055) 1px, transparent 1px);
-background-size: 36px 36px;
-mask-image: linear-gradient(to bottom, black, transparent 75%);
-}
-button { font: inherit; }
-.app {
-width: min(1440px, calc(100% - 36px));
-margin: 0 auto;
-padding: 28px 0 42px;
-}
-.shell {
-display: grid;
-grid-template-columns: minmax(0, 1.35fr) minmax(360px, .85fr);
-grid-template-areas: "hero hero" "stage side";
-gap: 18px;
-}
-.hero {
-grid-area: hero;
-display: flex;
-align-items: end;
-justify-content: space-between;
-gap: 28px;
-padding: 26px 30px;
-border: 1px solid rgba(255,255,255,.72);
-border-radius: 28px;
-background: rgba(255,255,255,.52);
-box-shadow: var(--shadow);
-backdrop-filter: blur(18px);
-}
-.eyebrow {
-color: var(--green);
-font-size: 12px;
-font-weight: 800;
-letter-spacing: .22em;
-text-transform: uppercase;
-}
-h1 {
-margin: 8px 0 8px;
-font-family: "STSong", "SimSun", serif;
-font-size: clamp(44px, 6vw, 82px);
-line-height: .98;
-letter-spacing: -.05em;
-}
-.lead {
-max-width: 760px;
-margin: 0;
-color: var(--muted);
-line-height: 1.8;
-}
-.hero-note {
-min-width: 260px;
-padding: 16px 18px;
-border: 1px solid var(--line);
-border-radius: 18px;
-background: rgba(255,255,255,.58);
-color: var(--muted);
-line-height: 1.7;
-font-size: 13px;
-}
-.hero-note strong { color: var(--green); }
-.stage, .side {
-border: 1px solid rgba(255,255,255,.72);
-border-radius: 28px;
-background: var(--card);
-box-shadow: var(--shadow);
-backdrop-filter: blur(18px);
-}
-.stage {
-grid-area: stage;
-padding: 22px;
-overflow: hidden;
-}
-.topbar {
-display: flex;
-align-items: center;
-justify-content: space-between;
-gap: 18px;
-margin-bottom: 12px;
-}
-.subtitle {
-margin: 0;
-color: var(--muted);
-font-size: 14px;
-}
-.chips {
-display: flex;
-flex-wrap: wrap;
-justify-content: flex-end;
-gap: 8px;
-}
-.chip {
-border: 1px solid var(--line);
-border-radius: 999px;
-padding: 8px 13px;
-color: #667067;
-background: rgba(255,255,255,.56);
-cursor: pointer;
-transition: .2s ease;
-}
-.chip:hover { transform: translateY(-1px); color: var(--green); }
-.chip.is-active { color: white; border-color: var(--green); background: var(--green); box-shadow: 0 8px 20px rgba(49,92,69,.24); }
-.playground {
-display: grid;
-justify-items: center;
-gap: 16px;
-}
-.wheel-wrap {
-position: relative;
-width: var(--wheel-size);
-aspect-ratio: 1;
-display: grid;
-place-items: center;
-filter: drop-shadow(0 22px 38px rgba(66,73,54,.2));
-}
-.halo {
-position: absolute;
-inset: -2.5%;
-border-radius: 50%;
-border: 1px solid rgba(49,92,69,.12);
-background: rgba(255,255,255,.22);
-}
-.pointer {
-position: absolute;
-top: -3px;
-left: 50%;
-width: 0;
-height: 0;
-z-index: 5;
-transform: translateX(-50%);
-border-left: 17px solid transparent;
-border-right: 17px solid transparent;
-border-top: 33px solid #f8efe0;
-filter: drop-shadow(0 5px 4px rgba(58,45,27,.2));
-}
-.pointer::after {
-content: "";
-position: absolute;
-left: -10px;
-top: -42px;
-width: 20px;
-height: 20px;
-border-radius: 50%;
-background: radial-gradient(circle at 35% 35%, #fff7dc, #d47845 62%, #7d3b25 100%);
-box-shadow: 0 0 0 6px rgba(255,255,255,.55);
-}
-.wheel {
-position: relative;
-width: 100%;
-height: 100%;
-overflow: hidden;
-border: 8px solid rgba(255,255,255,.7);
-border-radius: 50%;
-background: var(--wheel-gradient);
-transform: rotate(var(--rotation));
-transition: transform 4.6s cubic-bezier(.12,.86,.14,1);
-}
-.wheel::before {
-content: "";
-position: absolute;
-inset: 11%;
-z-index: 1;
-border: 1px solid rgba(255,255,255,.28);
-border-radius: 50%;
-background: radial-gradient(circle at 35% 28%, rgba(255,255,255,.30), transparent 45%);
-box-shadow: inset 0 0 0 24px rgba(255,255,255,.035);
-}
-.wheel.is-resetting, .wheel.is-resetting .slice-label span { transition: none; }
-.slice-label {
-position: absolute;
-left: 50%;
-top: 50%;
-z-index: 2;
-color: white;
-font-weight: 800;
-letter-spacing: .04em;
-pointer-events: none;
-user-select: none;
-text-shadow: 0 2px 9px rgba(25,31,24,.36);
-}
-.slice-label span {
-display: inline-flex;
-align-items: center;
-justify-content: center;
-max-width: 7.2em;
-padding: 6px 9px;
-border: 1px solid rgba(255,255,255,.18);
-border-radius: 999px;
-overflow: hidden;
-background: rgba(37,51,40,.36);
-backdrop-filter: blur(5px);
-font-size: clamp(10px, 1.15vw, 13px);
-text-overflow: ellipsis;
-white-space: nowrap;
-transform: rotate(calc(-1 * var(--rotation)));
-transition: transform 4.6s cubic-bezier(.12,.86,.14,1);
-}
-.hub {
-position: absolute;
-z-index: 4;
-width: 23%;
-aspect-ratio: 1;
-display: grid;
-place-items: center;
-border: 8px solid rgba(255,255,255,.34);
-border-radius: 50%;
-background: radial-gradient(circle at 34% 28%, #fff4ce 0 8%, #e2a25e 34%, #9b5838 75%, #5a3228 100%);
-box-shadow: 0 13px 28px rgba(63,39,22,.3);
-}
-.hub::after {
-content: "吃";
-display: grid;
-width: 42%;
-aspect-ratio: 1;
-place-items: center;
-border-radius: 50%;
-color: var (--green);
-background: #fffaf0;
-font-family: "STSong", serif;
-font-size: clamp (18px, 3vw, 30px);
-font-weight: 900;
-}
-.controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-.primary, .secondary {
-border: 0;
-border-radius: 14px;
-padding: 13px 22px;
-cursor: pointer;
-transition: .2s ease;
-}
-.primary { color: white; background: linear-gradient(135deg, var(--orange), #e49758); box-shadow: 0 10px 24px rgba(196,102,57,.27); }
-.secondary { color: var(--green); border: 1px solid var(--line); background: rgba(255,255,255,.72); }
-.primary:hover, .secondary:hover { transform: translateY(-2px); }
-.primary:disabled, .secondary:disabled { opacity: .55; cursor: wait; transform: none; }
-.status { margin: 0; color: var(--muted); font-size: 13px; text-align: center; }
-.status::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 7px; border-radius: 50%; background: #65a875; box-shadow: 0 0 0 5px rgba(101,168,117,.12); }
-.side {
-grid-area: side;
-padding: 22px;
-display: flex;
-flex-direction: column;
-gap: 14px;
-}
-.panel-title { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-.panel-title h2 { margin: 0; font-size: 20px; }
-.badge { padding: 7px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: 12px; background: rgba(255,255,255,.58); }
-.food-photo {
-position: relative;
-min-height: 250px;
-overflow: hidden;
-border-radius: 22px;
-background: linear-gradient(145deg, #d8b47c, #66836c);
-}
-.food-photo img { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 0; display: block; object-fit: cover; transition: opacity .25s ease; }
-.photo-fallback { position: absolute; inset: 0; display: grid; place-items: center; padding: 32px; color: white; font-family: "STSong", serif; font-size: 38px; text-align: center; background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.25), transparent 38%); }
-.food-photo img:not([hidden]) + .photo-fallback { opacity: 0; }
-.result-card, .recipe-box {
-border: 1px solid var(--line);
-border-radius: 20px;
-background: rgba(255,255,255,.58);
-padding: 17px;
-}
-.result-label { color: var(--orange); font-size: 11px; font-weight: 900; letter-spacing: .18em; text-transform: uppercase; }
-.result-card h3 { margin: 6px 0 6px; font-family: "STSong", serif; font-size: clamp(34px, 4vw, 50px); line-height: 1.05; }
-.meta { color: var(--muted); font-size: 13px; }
-.recipe-box h4 { margin: 0 0 11px; color: var(--green); }
-.ingredients { display: flex; flex-wrap: wrap; gap: 7px; }
-.ingredient { padding: 7px 9px; border-radius: 10px; color: #536054; background: #edf1e9; font-size: 12px; }
-.steps { margin: 0; padding-left: 22px; color: #4e574e; line-height: 1.72; font-size: 13px; }
-.steps li + li { margin-top: 5px; }
-.tip { margin-top: auto; padding: 12px 14px; color: var(--muted); border-radius: 15px; background: rgba(49,92,69,.06); font-size: 12px; line-height: 1.7; }
-@media (max-width: 1050px) {
-.shell { grid-template-columns: 1fr; grid-template-areas: "hero" "stage" "side"; }
-.side { min-height: auto; }
-.food-photo { aspect-ratio: 4 / 3; min-height: 0; }
-}
-@media (max-width: 700px) {
-:root { --wheel-size: min(88vw, 500px); }
-.app { width: min(100% - 18px, 1440px); padding-top: 10px; }
-.hero, .stage, .side { border-radius: 21px; }
-.hero { align-items: start; flex-direction: column; padding: 22px; }
-.hero-note { min-width: 0; width: 100%; }
-.stage, .side { padding: 15px; }
-.topbar { align-items: start; flex-direction: column; }
-.chips { justify-content: flex-start; }
-.chip { padding: 7px 10px; font-size: 12px; }
-.food-photo { aspect-ratio: 4 / 3; min-height: 0; } .food-photo img { min-height: 0; }
-}
-</style></head> <body> <main class="app"> <section class="shell" aria-label="今天吃什么菜谱转盘"> <header class="hero"> <div> <div class="eyebrow">Recipe Decision Wheel</div> <h1>今天吃什么？</h1> <p class="lead">从你的 108 道菜谱里随机挑选。可以先按食物分类缩小范围，再转动转盘；抽中后会显示所需材料、做法和对应菜品图片。</p> </div> <div class="hero-note"><strong>使用方式</strong><br>每轮展示最多 12 道候选菜，避免菜名拥挤。“换一批”会从当前分类重新抽取，全部菜谱都会参与。</div> </header> <section class="stage" aria-label="菜谱转盘"> <div class="topbar"> <p class="subtitle">先选分类，再把今天的菜单交给运气。</p> <div class="chips" id="chips" role="tablist" aria-label="食物分类"></div> </div> <div class="playground"> <div class="wheel-wrap"> <div class="halo"></div> <div class="pointer" aria-hidden="true"></div> <div class="wheel" id="wheel" aria-label="今天吃什么转盘"></div> <div class="hub" aria-hidden="true"></div> </div> <div class="controls"> <button class="primary" id="spinBtn" type="button">开始转</button> <button class="secondary" id="shuffleBtn" type="button">换一批</button> </div> <p class="status" id="statusText">本轮候选已准备好，按空格键也可以开始。</p> </div> </section> <aside class="side" aria-label="菜谱详情"> <div class="panel-title"> <h2>今日菜单</h2> <span class="badge" id="countBadge">12 / 108 道</span> </div> <div class="food-photo"> <img id="foodImage" alt="菜品图片"> <div class="photo-fallback" id="photoFallback" aria-hidden="true"></div> </div> <div class="result-card"> <div class="result-label">Today's Pick</div> <h3 id="resultTitle">可乐鸡翅根</h3> <div class="meta" id="resultMeta">家常菜 · 用量可按人数调整</div> </div> <div class="recipe-box"> <h4>需要的材料</h4> <div class="ingredients" id="ingredients"></div> </div> <div class="recipe-box"> <h4>相应的做法</h4> <ol class="steps" id="steps"></ol> </div>  </aside> </section> </main> <script> const dishNames = [ "可乐鸡翅根","红烧肉","糖醋里脊","红烧带鱼","土豆炖排骨","油焖大虾","水煮肉片","锅包肉","黄焖鸡","烤鸭","四喜丸子","排骨铁锅炖","蒜香蒸排骨","虾仁蒸蛋","西红柿炒鸡蛋","青椒土豆丝","麻辣香锅","红烧茄子","蔬菜鲜虾饼","小炒牛肉","煎牛肉饼","鱼香肉丝","清炒包菜","蚂蚁上树","蒜薹炒肉","干锅花菜","白菜猪肉炖粉条","白灼虾","香菇油菜","黄瓜炒鸡蛋","京酱肉丝","干煸豆角","总督豆腐","蒜黄炒鸡蛋","清炒丝瓜","辣炒花蛤","葱烧豆腐","肉末豆腐","茄子烧豆角","蒜苔炒肉","青椒酿肉","黄瓜拉皮","凉拌菠菜","凉拌苦菊","腌萝卜","炸花生米","凉拌猪头肉","小葱拌豆腐","熏肠","芹菜花生","黄瓜拌油条","麻酱面藕","烙饼","米饭","鸡蛋挂面","面条","小米南瓜粥","饺子","炒馒头","豆角焖面","大米粥","玉米粥","椒盐花卷","小馄饨","牛肉板面","炒饼","麻酱凉皮","炒方便面","炸酱面","油条","豆腐脑","发面火烧","油泼面","椒盐葱花饼","馒头","披萨","煎蛋","酱肉包子","皮蛋瘦肉粥","脆皮糖糕","虾仁蛋炒饭","西红柿鸡蛋汤","白菜鸡蛋豆腐汤","冬瓜丸子汤","肉丸子青菜汤","紫菜蛋花汤","排骨玉米汤","酸辣汤","蛋挞","杨枝甘露","小蛋糕","柠檬水","鲜榨西瓜汁","鲜榨橙汁","火龙果香蕉奶昔","蓝莓香蕉奶昔","炸鸡柳","芒果奶昔","牛油果香蕉奶昔","切切西瓜","烤肠","榴莲","螺蛳粉","烤串烤肉","卤鸭脖","香辣小龙虾","火锅","火鸡面" ]; const categories = ["全部","家常菜","海鲜","凉菜","主食","汤粥","甜品饮品","夜宵"]; const wheelColors = ["#d98464","#d2a55f","#76967d","#7296a0","#b77d73","#8b7aa5","#cf8e69","#6f9279","#c67d8a","#a88b60","#688a9a","#b56f5c"]; const specialIngredients = { "可乐鸡翅根":["鸡翅根 500克","可乐 1罐","葱姜","生抽","老抽"], "四喜丸子":["猪肉馅 500克","荸荠","鸡蛋 1个","葱姜水","生抽"], "麻辣香锅":["喜欢的肉类","时令蔬菜","丸子豆制品","麻辣香锅底料","蒜和香菜"], "蚂蚁上树":["红薯粉丝 1把","猪肉末 150克","豆瓣酱","葱姜蒜","生抽"], "总督豆腐":["北豆腐 1块","虾仁","猪肉末","青豆","高汤"], "杨枝甘露":["芒果 2个","西柚","西米","椰浆","牛奶"], "豆腐脑":["嫩豆腐","木耳","黄花菜","鸡蛋","水淀粉"], "螺蛳粉":["螺蛳粉 1包","酸笋","腐竹","花生","青菜"], "火锅":["火锅底料","肉片","蔬菜","菌菇","丸子豆制品"], "披萨":["披萨饼底","马苏里拉芝士","番茄酱","彩椒洋葱","喜欢的肉类"], "蛋挞":["蛋挞皮","鸡蛋 2个","牛奶 200毫升","淡奶油","白糖"], "小蛋糕":["低筋面粉","鸡蛋","牛奶","白糖","玉米油"], "脆皮糖糕":["面粉","开水","白糖","熟芝麻","食用油"], "皮蛋瘦肉粥":["大米","皮蛋 2个","瘦肉 150克","姜丝","小葱"], "香辣小龙虾":["小龙虾 2斤","火锅底料","啤酒","葱姜蒜","干辣椒"], "烤串烤肉":["羊肉或牛肉","洋葱","孜然粉","辣椒粉","食用油"], "炸酱面":["面条","猪肉末","甜面酱","黄豆酱","黄瓜丝"], "油泼面":["宽面条","青菜","辣椒面","蒜末","香醋"], "牛肉板面":["宽面条","牛肉","豆瓣酱","香料包","青菜"], "麻酱凉皮":["凉皮","黄瓜丝","芝麻酱","蒜水","香醋"], "黄焖鸡":["鸡腿肉 500克","香菇","土豆","青椒","黄豆酱"], "锅包肉":["猪里脊 400克","土豆淀粉","白糖","米醋","胡萝卜香菜"], "鱼香肉丝":["猪里脊 300克","木耳","胡萝卜","青椒","豆瓣酱"], "水煮肉片":["猪里脊 400克","豆芽或青菜","豆瓣酱","花椒辣椒","淀粉"], "京酱肉丝":["猪里脊 300克","甜面酱","豆腐皮","大葱","白糖"], "白菜猪肉炖粉条":["大白菜","五花肉","粉条","葱姜","生抽"], "冬瓜丸子汤":["冬瓜","猪肉馅","鸡蛋清","葱姜","白胡椒"], "酸辣汤":["豆腐","木耳","火腿","鸡蛋","香醋和胡椒粉"] }; const ingredientTokens = [ ["鸡翅根","鸡翅根 500克"],["排骨","排骨 500克"],["红烧肉","五花肉 500克"],["里脊","猪里脊 350克"],["带鱼","带鱼 500克"],["大虾","鲜虾 500克"],["白灼虾","鲜虾 500克"],["虾仁","虾仁 200克"],["花蛤","花蛤 500克"],["小龙虾","小龙虾 2斤"],["牛肉","牛肉 350克"],["猪头肉","熟猪头肉 300克"],["鸡","鸡肉 500克"],["鸭","鸭肉 1只"],["丸子","肉馅 350克"],["肉片","猪里脊 350克"],["肉丝","猪里脊 300克"],["肉末","猪肉末 200克"],["酿肉","猪肉馅 250克"],["鸡蛋","鸡蛋 3个"],["土豆","土豆 2个"],["茄子","茄子 2根"],["豆角","豆角 350克"],["花菜","花菜 1颗"],["包菜","包菜 半颗"],["白菜","大白菜 半颗"],["菠菜","菠菜 300克"],["苦菊","苦菊 1把"],["油菜","油菜 300克"],["黄瓜","黄瓜 2根"],["丝瓜","丝瓜 2根"],["萝卜","白萝卜 1根"],["豆腐","豆腐 1块"],["蒜薹","蒜薹 300克"],["蒜苔","蒜苔 300克"],["蒜黄","蒜黄 300克"],["青椒","青椒 3个"],["西红柿","西红柿 2个"],["香菇","香菇 200克"],["芹菜","芹菜 250克"],["花生","花生米 250克"],["面条","面条 300克"],["挂面","挂面 250克"],["馒头","馒头 2个"],["米饭","米饭 2碗"],["大米","大米 1杯"],["小米","小米 1杯"],["玉米","玉米 1根"],["饺子","饺子 适量"],["馄饨","馄饨 适量"],["凉皮","凉皮 2张"],["油条","油条 2根"],["烤肠","烤肠 4根"],["鸭脖","鸭脖 500克"],["西瓜","西瓜 适量"],["橙汁","鲜橙 3个"],["柠檬","柠檬 2个"],["芒果","芒果 2个"],["蓝莓","蓝莓 150克"],["火龙果","火龙果 1个"],["牛油果","牛油果 1个"],["榴莲","榴莲果肉 适量"] ]; function getCategory(name) { if (/蛋挞|甘露|蛋糕|柠檬水|汁|奶昔|切切西瓜|榴莲/.test(name)) return "甜品饮品"; if (/汤|粥|豆腐脑/.test(name)) return "汤粥"; if (/凉拌|腌萝卜|花生米|猪头肉|熏肠|芹菜花生|黄瓜拌油条|麻酱面藕|黄瓜拉皮|小葱拌豆腐/.test(name)) return "凉菜"; if (/炸鸡柳|烤肠|螺蛳粉|烤串|鸭脖|小龙虾|火锅|火鸡面/.test(name)) return "夜宵"; if (/带鱼|大虾|白灼虾|虾仁|花蛤|鲜虾/.test(name)) return "海鲜"; if (/饼|米饭|挂面|面条|粥|饺子|馒头|焖面|花卷|馄饨|板面|凉皮|方便面|炸酱面|油条|火烧|油泼面|包子|蛋炒饭|披萨|糖糕/.test(name)) return "主食"; return "家常菜"; } function dedupe(values) { return [...new Set(values.filter(Boolean))]; } function getIngredients(name) { if (specialIngredients[name]) return specialIngredients[name]; const ingredients = []; ingredientTokens.forEach(([token, ingredient]) => { if (name.includes(token)) ingredients.push(ingredient); }); if (!ingredients.length) ingredients.push(`${name}所需主料`); if (/红烧|炖|焖|卤|黄焖/.test(name)) ingredients.push("葱姜","生抽","老抽或糖色"); else if (/糖醋|锅包/.test(name)) ingredients.push("淀粉","白糖","米醋"); else if (/辣|麻辣|水煮|干锅|火鸡/.test(name)) ingredients.push("干辣椒","花椒或辣酱","葱姜蒜"); else if (/凉拌|拉皮|苦菊|菠菜|面藕/.test(name)) ingredients.push("蒜末","香醋","香油"); else if (/蒸/.test(name)) ingredients.push("葱姜","料酒","蒸鱼豉油"); else if (/炒|煎|清炒|干煸/.test(name)) ingredients.push("蒜末","盐","食用油"); else if (/汤|粥/.test(name)) ingredients.push("清水或高汤","盐","白胡椒"); else if (/奶昔/.test(name)) ingredients.push("牛奶或酸奶","蜂蜜"); else ingredients.push("盐","食用油","常用调味料"); return dedupe(ingredients).slice(0, 6); } function getSteps(name) { if (/鲜榨.*汁/.test(name)) return ["水果洗净去皮去籽，切成小块。","放入榨汁机，按口味加入少量凉开水。","搅打细腻后立即饮用，也可加冰块。"]; if (/奶昔/.test(name)) return ["水果去皮切块，提前冷藏口感更好。","与牛奶或酸奶一起放入料理机。","搅打至顺滑，按口味加入蜂蜜即可。"]; if (name === "切切西瓜" || name === "榴莲") return ["挑选成熟新鲜的水果。","清洗外皮后切开，去除不可食部分。","切成方便入口的大小，冷藏后食用更佳。"]; if (/凉拌|拉皮|苦菊|菠菜|面藕|小葱拌豆腐|芹菜花生|腌萝卜/.test(name)) return ["主料洗净处理好，需要焯水的食材快速焯熟并过凉。","蒜末、生抽、香醋、香油和少许糖盐调成料汁。","倒入食材充分拌匀，静置几分钟入味后装盘。"]; if (/红烧|黄焖|卤/.test(name)) return ["主料洗净切块，肉类冷水下锅焯去浮沫。","锅中少油炒香葱姜，放入主料煎炒至表面微黄。","加入生抽、老抽、料酒和适量热水，小火焖至熟透。","开盖收汁，尝味后调整咸甜即可。"]; if (/炖|铁锅/.test(name)) return ["主料切块，肉类先焯水，蔬菜处理成大小均匀的块。","炒香葱姜和主料，加入生抽、料酒翻匀。","加入没过食材的热水，小火炖至肉软。","放入耐煮蔬菜继续炖熟，调盐后出锅。"]; if (/糖醋|锅包/.test(name)) return ["主料切条或片，加盐和料酒腌制，裹上淀粉糊。","油温六成热下锅炸至定型，升高油温复炸至酥脆。","白糖、米醋、生抽和少量水调成糖醋汁。","锅中熬至浓亮，快速放入炸好的主料翻匀。"]; if (/蒸/.test(name)) return ["主料洗净改刀，用葱姜、料酒和少许盐腌制。","摆入盘中，水开后上锅蒸至熟透。","倒掉多余汤汁，淋入豉油或调味汁。","撒葱花，浇少量热油激香。"]; if (/白灼/.test(name)) return ["主料洗净，准备葱姜和蘸汁。","锅中水烧开，加姜片和少许料酒。","放入主料煮至刚熟，立即捞出避免过火。","搭配蒜蓉生抽蘸汁食用。"]; if (/汤/.test(name)) return ["所有食材洗净切好，肉类可提前腌制或焯水。","锅中加入清水或高汤，先放耐煮食材。","煮熟后加入易熟食材，保持小火。","用盐和白胡椒调味，撒葱花或香菜。"]; if (/粥/.test(name)) return ["米洗净后浸泡 20 分钟，配料切小块。","米和足量清水入锅，大火煮开后转小火。","熬至米粒开花黏稠，加入配料继续煮熟。","用盐或糖按口味调味，关火焖几分钟。"]; if (/面|凉皮|螺蛳粉/.test(name)) return ["准备面条和配菜，提前调好汤底或拌面汁。","面条煮至适口，捞出过水或直接放入碗中。","加入炒好的浇头、汤底或调味料。","放入青菜和配菜，拌匀后趁热食用。"]; if (/饼|馒头|花卷|包子|油条|火烧|糖糕|披萨|蛋挞|蛋糕/.test(name)) return ["按配方将面粉或面糊材料混合均匀。","完成揉面、醒发或静置，再整理成需要的形状。","加入馅料或表面配料，做好最后整形。","根据菜品选择烙、蒸、炸或烤，至表面上色且内部熟透。"]; if (/炒饭|炒馒头|炒饼|炒方便面/.test(name)) return ["主食提前准备好并打散，配菜切成小丁。","鸡蛋或肉类先炒熟盛出。","锅中炒香配菜，加入主食大火快速翻炒。","放回配料，加盐和生抽调味，炒匀出锅。"]; if (/煎|烤|炸/.test(name)) return ["主料处理成合适大小，加入调味料腌制入味。","煎烤前薄刷油；油炸则准备好面糊或裹粉。","控制中火加热至两面金黄、内部熟透。","出锅沥油或静置片刻，撒喜欢的香料。"]; if (/炒|干煸|爆|香锅/.test(name)) return ["所有食材洗净切好，肉类提前用料酒和淀粉腌制。","热锅凉油，先将肉类或难熟食材炒至断生盛出。","爆香葱姜蒜，放入蔬菜大火翻炒。","所有食材回锅，加生抽和盐调味，炒匀出锅。"]; return ["准备并清洗所有食材，按成熟时间切成合适大小。","锅中加少量油，先炒香葱姜蒜和主要食材。","加入配菜与调味料，控制火候烹至熟透。","尝味调整咸淡，装盘后趁热享用。"]; } 
-const preciseQuantityMap = {
-  "葱姜":"葱段 15克、姜片 10克", "葱姜蒜":"葱 10克、姜 8克、蒜 15克",
-  "蒜末":"蒜末 15克", "盐":"盐 3克", "食用油":"食用油 20毫升",
-  "常用调味料":"白胡椒 1克", "生抽":"生抽 15毫升", "老抽":"老抽 5毫升",
-  "老抽或糖色":"老抽 5毫升", "料酒":"料酒 15毫升", "白糖":"白糖 8克",
-  "米醋":"米醋 20毫升", "香醋":"香醋 20毫升", "香油":"香油 5毫升",
-  "淀粉":"玉米淀粉 20克", "蒸鱼豉油":"蒸鱼豉油 15毫升",
-  "干辣椒":"干辣椒 8克", "花椒或辣酱":"花椒 3克或辣酱 15克",
-  "清水或高汤":"清水或高汤 1000毫升", "白胡椒":"白胡椒粉 1克",
-  "牛奶或酸奶":"牛奶或酸奶 250毫升", "蜂蜜":"蜂蜜 10克",
-  "喜欢的肉类":"肉类 500克", "时令蔬菜":"时令蔬菜 500克",
-  "丸子豆制品":"丸子和豆制品 400克", "喜欢的肉类":"肉类 300克"
-};
+button { font:inherit; border:0; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+.app { width:100%; max-width:760px; margin:0 auto; padding:14px 14px calc(20px + env(safe-area-inset-bottom)); }
+.shell { display:flex; flex-direction:column; gap:14px; }
 
-function quantifyIngredient(item, name) {
-  if (preciseQuantityMap[item]) return preciseQuantityMap[item];
-  if (/适量/.test(item)) return item.replace("适量", "300克");
-  if (/所需主料/.test(item)) return `${name}主料 500克`;
-  if (/\d/.test(item)) return item;
-  if (/酱|醋|油|汁|水|浆|奶/.test(item)) return `${item} 15毫升`;
-  if (/葱|姜|蒜|香菜|辣椒|花椒|芝麻|糖|盐|粉/.test(item)) return `${item} 8克`;
-  return `${item} 200克`;
+.hero { display:flex; flex-direction:column; gap:12px; padding:20px; border:1px solid var(--line); min-width:0;
+  border-radius:24px; background:rgba(255,255,255,.74); box-shadow:var(--shadow-sm); backdrop-filter:blur(14px); }
+.eyebrow { color:var(--brand); font-size:11px; font-weight:800; letter-spacing:.28em; }
+h1 { margin:6px 0 4px; font-size:clamp(30px,8vw,46px); line-height:1.05; font-weight:800; letter-spacing:-.02em; color:var(--ink); }
+.lead { margin:0; color:var(--muted); font-size:13.5px; line-height:1.75; }
+.hero-note { font-size:12.5px; line-height:1.7; color:var(--muted); padding:12px 14px; border-radius:16px;
+  background:var(--brand-soft); border:1px solid rgba(54,169,124,.12); }
+.hero-note strong { color:var(--brand-d); font-weight:800; margin-right:6px; }
+
+.stage, .side { border:1px solid var(--line); border-radius:24px; background:var(--card); box-shadow:var(--shadow); padding:16px; display:flex; flex-direction:column; min-width:0; }
+.stage { gap:14px; } .side { gap:13px; }
+
+.chips { display:flex; flex-wrap:wrap; gap:7px; max-width:100%; }
+.chip { border:1px solid var(--line); background:#f6faf7; color:#5c7264; border-radius:999px; padding:8px 13px;
+  font-size:12.5px; font-weight:600; min-height:36px; transition:.18s ease; }
+.chip:active { transform:scale(.95); }
+.chip.is-active { background:var(--brand); border-color:var(--brand); color:#fff; box-shadow:0 6px 16px rgba(54,169,124,.28); }
+
+.playground { display:flex; flex-direction:column; align-items:center; gap:16px; width:100%; min-width:0; }
+.wheel-wrap { position:relative; width:100%; max-width:430px; margin-inline:auto; aspect-ratio:1; display:grid; place-items:center; }
+.wheel-glow { position:absolute; inset:-3%; border-radius:50%;
+  background:radial-gradient(circle at 50% 42%, rgba(255,255,255,.9), rgba(255,255,255,0) 62%); }
+.wheel-svg { position:relative; width:100%; height:auto; display:block; filter:drop-shadow(0 16px 30px rgba(54,100,74,.20)); }
+.wheel-rotate { transform-box:view-box; transform-origin:300px 300px; transition:transform 4.6s cubic-bezier(.12,.86,.14,1); }
+.wheel-rotate.is-resetting { transition:none; }
+.wheel-rotate path { stroke:rgba(255,255,255,.92); stroke-width:2; }
+.slice-text { fill:#fff; font-weight:800; letter-spacing:1px; font-family:inherit;
+  paint-order:stroke; stroke:rgba(28,74,52,.16); stroke-width:3px; stroke-linejoin:round; }
+.wheel-rim { stroke:#fff; stroke-width:7; fill:none; }
+.wheel-hub circle { fill:url(#hubGrad); stroke:#fff; stroke-width:6; }
+.hub-text { fill:#fff; font-weight:900; font-size:40px; font-family:"STSong","SimSun",serif; }
+.pointer { position:absolute; top:-2px; left:50%; transform:translateX(-50%); z-index:5; width:0; height:0;
+  border-left:13px solid transparent; border-right:13px solid transparent; border-top:24px solid var(--accent-d);
+  filter:drop-shadow(0 3px 4px rgba(214,110,60,.3)); }
+.pointer::after { content:""; position:absolute; left:50%; top:-30px; transform:translateX(-50%);
+  width:18px; height:18px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#ffffff,#ffd2b0 45%,var(--accent-d));
+  box-shadow:0 0 0 4px rgba(255,255,255,.82); }
+
+.controls { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; }
+.primary, .secondary { min-height:50px; padding:0 28px; border-radius:999px; font-size:15px; font-weight:700;
+  display:inline-flex; align-items:center; justify-content:center; transition:.18s ease; }
+.primary { color:#fff; background:linear-gradient(135deg,#ffab77,var(--accent-d)); box-shadow:0 10px 22px rgba(244,133,74,.32); }
+.secondary { color:var(--brand-d); background:#fff; border:1.5px solid rgba(54,169,124,.35); }
+.primary:active, .secondary:active { transform:scale(.96); }
+.primary:disabled, .secondary:disabled { opacity:.55; cursor:wait; }
+.status { margin:0; color:var(--muted); font-size:12.5px; text-align:center; display:flex; align-items:center; gap:8px; }
+.status::before { content:""; width:7px; height:7px; border-radius:50%; background:var(--brand); box-shadow:0 0 0 4px rgba(54,169,124,.12); }
+
+.panel-title { display:flex; align-items:center; justify-content:space-between; }
+.panel-title h2 { margin:0; font-size:18px; font-weight:800; }
+.badge { font-size:12px; color:var(--brand-d); background:var(--brand-soft); border-radius:999px; padding:6px 12px; font-weight:700; }
+.food-photo { position:relative; aspect-ratio:16/10; border-radius:18px; overflow:hidden; background:linear-gradient(145deg,#d8ecd9,#bfe0d2); }
+.food-photo img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+.photo-fallback { position:absolute; inset:0; display:grid; place-items:center; padding:24px; color:#fff;
+  font-family:"STSong","SimSun",serif; font-size:30px; text-align:center;
+  background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.22),transparent 40%); }
+.food-photo img:not([hidden]) + .photo-fallback { opacity:0; }
+.result-card { padding:2px; }
+.result-label { color:var(--accent-d); font-size:10.5px; font-weight:800; letter-spacing:.2em; }
+.result-card h3 { margin:5px 0 4px; font-size:clamp(28px,6vw,40px); font-weight:800; line-height:1.1; letter-spacing:-.01em; color:var(--ink); }
+.meta { color:var(--muted); font-size:12.5px; line-height:1.6; }
+.recipe-box { background:#f8fbf9; border:1px solid var(--line); border-radius:18px; padding:15px; }
+.recipe-box h4 { margin:0 0 11px; color:var(--brand-d); font-size:14px; font-weight:800; display:flex; align-items:center; gap:8px; }
+.recipe-box h4::before { content:""; width:4px; height:15px; border-radius:2px; background:linear-gradient(var(--brand),var(--accent)); }
+.ingredients { display:flex; flex-wrap:wrap; gap:7px; }
+.ingredient { background:#fff; color:#3a6b53; border:1px solid rgba(54,169,124,.16); border-radius:9px; padding:7px 10px; font-size:12.5px; font-weight:600; }
+.steps { margin:0; padding-left:20px; color:#3f4d44; font-size:13.5px; line-height:1.75; }
+.steps li + li { margin-top:7px; }
+.steps li::marker { color:var(--brand); font-weight:800; }
+
+@media (min-width:960px) {
+  .wheel-wrap { max-width:min(42vw,500px); }
+  .app { max-width:1320px; padding:26px 24px 44px; }
+  .shell { display:grid; grid-template-columns:minmax(0,1.3fr) minmax(360px,.82fr);
+    grid-template-areas:"hero hero" "stage side"; gap:20px; align-items:start; }
+  .hero { grid-area:hero; flex-direction:row; align-items:center; justify-content:space-between; gap:28px; padding:24px 28px; }
+  .hero-main { flex:1; min-width:0; max-width:760px; }
+  .hero-note { width:260px; flex-shrink:0; }
+  .stage { grid-area:stage; padding:24px; }
+  .side { grid-area:side; position:sticky; top:20px; padding:22px; }
+  h1 { font-size:clamp(40px,4.6vw,68px); }
 }
-
-function preciseSeasonings(name) {
-  if (/红烧|黄焖|卤/.test(name)) return ["生抽 20毫升", "老抽 5毫升", "料酒 15毫升", "冰糖 8克", "热水 400毫升"];
-  if (/糖醋|锅包/.test(name)) return ["糖醋汁：白糖 30克、米醋 30毫升、生抽 10毫升、清水 30毫升", "淀粉 60克", "食用油 500毫升（实耗约40毫升）"];
-  if (/炖|铁锅/.test(name)) return ["生抽 20毫升", "料酒 15毫升", "盐 4克", "热水 800毫升"];
-  if (/凉拌|拉皮|苦菊|菠菜|面藕|腌萝卜/.test(name)) return ["凉拌汁：生抽 15毫升、香醋 20毫升、香油 5毫升、糖 3克、盐 2克", "蒜末 15克"];
-  if (/蒸/.test(name)) return ["料酒 10毫升", "盐 2克", "蒸鱼豉油 15毫升", "热油 10毫升"];
-  if (/汤/.test(name)) return ["清水或高汤 1000毫升", "盐 4克", "白胡椒粉 1克", "香油 3毫升"];
-  if (/粥/.test(name)) return ["米与水比例 1:10（大米100克、清水1000毫升）", "盐 2克或糖 15克"];
-  if (/奶昔/.test(name)) return ["水果 250克", "牛奶或酸奶 250毫升", "蜂蜜 10克"];
-  if (/鲜榨.*汁|柠檬水/.test(name)) return ["水果 300克", "凉开水 200毫升", "蜂蜜或糖 10克"];
-  if (/煎|炒|干煸|香锅/.test(name)) return ["食用油 20毫升", "生抽 10毫升", "盐 2克", "糖 2克"];
-  return ["食用油 20毫升", "盐 3克", "生抽 10毫升"];
+@media (max-width:380px) {
+  .primary, .secondary { padding:0 20px; font-size:14px; }
+  .chip { padding:8px 12px; }
 }
+</style>
+</head>
+<body>
+<main class="app">
+  <section class="shell" aria-label="今天吃什么菜谱转盘">
+    <header class="hero">
+      <div class="hero-main">
+        <div class="eyebrow">RECIPE WHEEL</div>
+        <h1>今天吃什么？</h1>
+        <p class="lead">108 道家常菜谱随机挑选：先按分类缩小范围，再转动转盘，抽中即显示用料、对应做法、参考来源与成品图。</p>
+      </div>
+      <div class="hero-note"><strong>玩法</strong>每轮最多 12 道候选，「换一批」从当前分类重新抽取，全部菜谱都会参与；也可以按空格键转动。</div>
+    </header>
 
-function getPreciseIngredients(name) {
-  const base = getIngredients(name).map((item) => quantifyIngredient(item, name));
-  return dedupe([...base, ...preciseSeasonings(name)]).slice(0, 10);
-}
+    <section class="stage" aria-label="菜谱转盘">
+      <div class="chips" id="chips" role="tablist" aria-label="食物分类"></div>
+      <div class="playground">
+        <div class="wheel-wrap">
+          <div class="wheel-glow" aria-hidden="true"></div>
+          <svg id="wheel" class="wheel-svg" viewBox="0 0 600 600" aria-label="今天吃什么转盘">
+            <defs>
+              <radialGradient id="hubGrad" cx="36%" cy="30%" r="78%">
+                <stop offset="0%" stop-color="#fff3d6"/>
+                <stop offset="55%" stop-color="#f0b86e"/>
+                <stop offset="100%" stop-color="#dd8a4e"/>
+              </radialGradient>
+            </defs>
+            <g id="wheelRotate" class="wheel-rotate"></g>
+            <circle class="wheel-rim" cx="300" cy="300" r="297"/>
+            <g class="wheel-hub" aria-hidden="true">
+              <circle cx="300" cy="300" r="56"/>
+              <text x="300" y="300" class="hub-text" text-anchor="middle" dominant-baseline="central">吃</text>
+            </g>
+          </svg>
+          <div class="pointer" aria-hidden="true"></div>
+        </div>
+        <div class="controls">
+          <button class="primary" id="spinBtn" type="button">开始转</button>
+          <button class="secondary" id="shuffleBtn" type="button">换一批</button>
+        </div>
+        <p class="status" id="statusText">本轮候选已准备好，按空格键也可以开始。</p>
+      </div>
+    </section>
 
-const preciseSpecialSteps = {
-  "米饭":["按2–3人份称大米300克，淘洗2遍后沥水，不要反复揉搓。","大米与水按1:1.2加入，即大米300克配清水360毫升；新米可减水20毫升。","浸泡20分钟后启动煮饭程序；普通锅大火煮开后转最小火焖12分钟。","关火后继续焖10分钟，再用饭勺翻松，散去多余水汽。"],
-  "煎蛋":["鸡蛋2个打入碗中，每个蛋配盐0.5克；需要嫩口可加清水10毫升。","平底锅中火预热40秒，加入食用油10毫升，转中小火。","倒入鸡蛋，单面煎90秒；翻面后再煎30–45秒。","蛋黄全熟需额外加盖焖1分钟，出锅前撒黑胡椒0.5克。"],
-  "火锅":["按2–3人份准备底料150克、清水或高汤1500毫升，比例约1:10。","锅中加油10毫升炒香底料1分钟，加入汤水，大火煮沸后小火煮8分钟。","先下耐煮的丸子、菌菇和根茎类煮5–8分钟，再下肉片涮30–60秒。","叶菜最后下锅煮1–2分钟；汤底变少时只补热水，不补冷水。"],
-  "蛋挞":["蛋挞皮12个提前回温10分钟；鸡蛋2个、牛奶200毫升、淡奶油100毫升、糖35克混合。","搅拌至糖溶化后过筛2次，挞液倒至蛋挞皮八分满。","烤箱提前以200℃预热10分钟。","放中层烤20–25分钟，表面出现焦糖斑即可。"],
-  "杨枝甘露":["西米80克放入1000毫升沸水，中火煮15分钟，关火焖10分钟至无白芯。","捞出西米过凉水；芒果300克取200克与椰浆150毫升、牛奶100毫升打匀。","剩余芒果切丁，西柚果肉80克拆散。","杯中加入西米、芒果浆和果肉，冷藏30分钟后食用。"],
-  "豆腐脑":["嫩豆腐400克隔水加热8分钟；木耳30克、黄花菜20克切丝。","锅中加高汤600毫升，放木耳和黄花菜煮5分钟，加生抽15毫升、盐3克。","鸡蛋1个打散淋入，水淀粉按淀粉20克:水40毫升调匀后分次勾芡。","豆腐舀入碗中，浇卤汁，按口味加香菜和辣椒油。"],
-  "饺子":["按2–3人份准备饺子30个，锅中加入不少于2500毫升清水。","水完全沸腾后下饺子，用勺背沿锅边推动防粘。","再次沸腾后加冷水100毫升，重复2次；全程中大火。","饺子鼓起并浮面后再煮1分钟，捞出沥水。"]
-};
+    <aside class="side" aria-label="菜谱详情">
+      <div class="panel-title">
+        <h2>今日菜单</h2>
+        <span class="badge" id="countBadge">12 / 108 道</span>
+      </div>
+      <div class="food-photo">
+        <img id="foodImage" alt="菜品图片">
+        <div class="photo-fallback" id="photoFallback" aria-hidden="true"></div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">TODAY'S PICK</div>
+        <h3 id="resultTitle">可乐鸡翅根</h3>
+        <div class="meta" id="resultMeta">家常菜 · 用量可按人数增减</div>
+      </div>
+      <div class="recipe-box">
+        <h4>需要的材料</h4>
+        <div class="ingredients" id="ingredients"></div>
+      </div>
+      <div class="recipe-box">
+        <h4>相应的做法</h4>
+        <ol class="steps" id="steps"></ol>
+      </div>
+    </aside>
+  </section>
+</main>
+<script> const dishNames = [ "可乐鸡翅根","红烧肉","糖醋里脊","红烧带鱼","土豆炖排骨","油焖大虾","水煮肉片","锅包肉","黄焖鸡","烤鸭","四喜丸子","排骨铁锅炖","蒜香蒸排骨","虾仁蒸蛋","西红柿炒鸡蛋","青椒土豆丝","麻辣香锅","红烧茄子","蔬菜鲜虾饼","小炒牛肉","煎牛肉饼","鱼香肉丝","清炒包菜","蚂蚁上树","蒜薹炒肉","干锅花菜","白菜猪肉炖粉条","白灼虾","香菇油菜","黄瓜炒鸡蛋","京酱肉丝","干煸豆角","总督豆腐","蒜黄炒鸡蛋","清炒丝瓜","辣炒花蛤","葱烧豆腐","肉末豆腐","茄子烧豆角","蒜苔炒肉","青椒酿肉","黄瓜拉皮","凉拌菠菜","凉拌苦菊","腌萝卜","炸花生米","凉拌猪头肉","小葱拌豆腐","熏肠","芹菜花生","黄瓜拌油条","麻酱面藕","烙饼","米饭","鸡蛋挂面","面条","小米南瓜粥","饺子","炒馒头","豆角焖面","大米粥","玉米粥","椒盐花卷","小馄饨","牛肉板面","炒饼","麻酱凉皮","炒方便面","炸酱面","油条","豆腐脑","发面火烧","油泼面","椒盐葱花饼","馒头","披萨","煎蛋","酱肉包子","皮蛋瘦肉粥","脆皮糖糕","虾仁蛋炒饭","西红柿鸡蛋汤","白菜鸡蛋豆腐汤","冬瓜丸子汤","肉丸子青菜汤","紫菜蛋花汤","排骨玉米汤","酸辣汤","蛋挞","杨枝甘露","小蛋糕","柠檬水","鲜榨西瓜汁","鲜榨橙汁","火龙果香蕉奶昔","蓝莓香蕉奶昔","炸鸡柳","芒果奶昔","牛油果香蕉奶昔","切切西瓜","烤肠","榴莲","螺蛳粉","烤串烤肉","卤鸭脖","香辣小龙虾","火锅","火鸡面" ]; const categories = ["全部","家常菜","海鲜","凉菜","主食","汤粥","甜品饮品","夜宵"]; const wheelColors = ["#7cc7a2","#f4a57e","#86bcdb","#e9c472","#dfa3b3","#6db7ac","#f2b27e","#97b1d6","#a8cf8d","#e69b9b","#b6a9da","#cdc373"]; const recipeDatabase = {
+"可乐鸡翅根": { source:"下厨房·高赞家常菜谱", ingredients:["鸡翅根 500克","可乐 330毫升（1罐）","姜片 15克","葱段 20克","生抽 20毫升","老抽 5毫升","料酒 15毫升","熟白芝麻 3克"], steps:["鸡翅根洗净，两面各划两刀便于入味，冷水下锅加姜片、料酒焯水，煮沸撇去浮沫后捞出沥干。","锅中放少许油，下鸡翅根中火煎到两面微黄。","放姜片、葱段炒香，加生抽、老抽翻炒上色，倒入可乐，液面刚好没过鸡翅。","大火烧开后转中小火焖15分钟，开盖加2克盐，大火把汤汁收浓裹匀，撒白芝麻出锅。"]},
+"红烧肉": { source:"东方美食·传统技法（炒糖色）", ingredients:["带皮五花肉 600克","冰糖 30克","生抽 20毫升","老抽 8毫升","料酒 20毫升","葱段 20克、姜片15克","八角2个、香叶2片","盐 3克","热水 适量"], steps:["五花肉切成2.5厘米见方的块，冷水下锅加料酒、姜片焯水3分钟，用温水洗净沥干。","锅中放少许油下冰糖，中小火炒到枣红色、起密集小泡，立刻倒入肉块快速翻炒上色。","下葱姜、八角、香叶炒香，烹入料酒，加生抽、老抽炒匀。","加入没过肉块的热水，大火烧开转小火炖50–60分钟至软烂。","开盖加盐，大火把汤汁收浓、油亮裹在肉上即可。"]},
+"糖醋里脊": { source:"下厨房·高赞家常菜谱", ingredients:["猪里脊 350克","玉米淀粉 80克","面粉 20克","白糖 40克","米醋 30毫升","番茄酱 20克","鸡蛋 1个（取蛋清）","料酒 10毫升","白芝麻 3克"], steps:["里脊切成0.8厘米粗条，加盐2克、料酒、蛋清抓匀腌15分钟。","淀粉加面粉和适量清水调成能挂住肉条的稠糊，把肉条裹匀。","油温六成热（约170℃）逐条下锅炸定型捞出，升到八成热（约190℃）复炸到金黄酥脆。","另起锅放白糖、米醋、番茄酱、生抽5毫升、清水30毫升，小火熬到浓稠起泡。","倒入炸好的里脊快速翻匀裹汁，撒白芝麻出锅，趁热吃外酥里嫩。"]},
+"红烧带鱼": { source:"美食天下·经典菜谱", ingredients:["带鱼 500克","葱 20克、姜10克、蒜4瓣","料酒 15毫升","生抽 20毫升","老抽 5毫升","香醋 10毫升","白糖 8克","面粉 适量"], steps:["带鱼去头尾、内脏和腹内黑膜洗净，切段后加料酒、姜片、盐2克腌15分钟，表面拍一层薄面粉。","锅中油烧热，带鱼下锅中火煎到两面金黄定型，盛出。","锅留底油爆香葱姜蒜，加生抽、老抽、白糖、香醋和半碗热水烧开。","放入带鱼，中小火烧5分钟入味，中途翻面一次，大火收汁撒葱花出锅。"]},
+"土豆炖排骨": { source:"下厨房·高赞家常菜谱", ingredients:["排骨 500克","土豆 2个（约400克）","葱姜 适量","八角 2个","生抽 20毫升","老抽 5毫升","料酒 15毫升","冰糖 5克、盐4克"], steps:["排骨冷水下锅加料酒、姜片焯水，煮沸撇沫后捞出用温水洗净。","锅中放少许油爆香葱姜、八角，下排骨炒到表面微黄。","加生抽、老抽、冰糖炒上色，加入没过排骨的热水，大火烧开转小火炖30分钟。","土豆切滚刀块放入，继续炖15分钟到土豆绵软，加盐，大火稍收汁出锅。"]},
+"油焖大虾": { source:"东方美食·鲁菜技法", ingredients:["鲜虾 500克","姜丝 15克、葱段20克","番茄酱 15克","生抽 10毫升","白糖 10克","料酒 15毫升","清水 30毫升","盐 2克"], steps:["大虾剪去虾须虾枪，挑出虾线，用厨房纸吸干表面水分。","锅中稍多放油烧热，下虾中火煎，用锅铲轻压虾头挤出虾脑红油，煎到两面变红盛出。","锅留底油爆香姜丝，下番茄酱炒出红油，加生抽、白糖、料酒、清水调成汁。","大虾回锅，盖盖小火焖2分钟，开盖大火收汁到汤汁油亮裹住虾身，撒葱段出锅。"]},
+"水煮肉片": { source:"美食作家王刚·川菜技法", ingredients:["猪里脊 350克","黄豆芽 200克","青菜 150克","郫县豆瓣酱 30克","干辣椒 15克、花椒5克","蒜 20克、姜10克","蛋清 1个、淀粉15克","生抽 15毫升、热水800毫升"], steps:["里脊切薄片，加盐、料酒、蛋清、淀粉抓匀上浆，最后封一勺油防粘。","豆芽、青菜沸水焯1分钟捞出，垫在大碗底部。","锅中油下姜蒜、郫县豆瓣酱炒出红油，加生抽、热水烧开煮2分钟，加盐调好咸淡。","保持汤微沸，逐片下入肉片，用筷子轻轻拨散，肉片变白刚熟（约1分钟）就连汤倒入菜碗。","表面撒蒜末、干辣椒段、花椒，浇上约200℃的热油激出香味，撒香菜即可。"]},
+"锅包肉": { source:"东方美食·东北老式做法", ingredients:["猪里脊 400克","土豆淀粉 120克","白糖 70克","9度米醋 60毫升","生抽 5毫升","葱丝15克、姜丝10克、蒜片","胡萝卜丝 15克、香菜20克","盐 2克"], steps:["土豆淀粉加水浸泡1小时以上，用前倒掉表层清水并把淀粉抓碎；里脊切成0.3厘米的大薄片，加少许盐抓匀。","肉片放进湿淀粉，加少量清水和15毫升油抓匀，糊呈缓慢流下的状态。","六成油温（约160℃）逐片下锅炸2分钟定型捞出，八成油温（约180℃）复炸30秒到金黄酥脆。","白糖、米醋、生抽、盐1克调成糖醋汁，老式做法不放番茄酱。","锅留底油爆香葱姜蒜、胡萝卜丝，倒入糖醋汁熬到冒密泡，下肉片和香菜，10秒内快速翻匀出锅。"]},
+"黄焖鸡": { source:"下厨房·高赞家常菜谱", ingredients:["鸡腿肉 600克","干香菇 6朵","土豆 1个、青椒1个","姜片15克、蒜片","生抽 25毫升","老抽 5毫升","黄豆酱 15克","冰糖8克、盐2克"], steps:["鸡肉剁块，冷水下锅加料酒、姜片焯水，撇沫捞出沥干；香菇泡发，土豆、青椒切块。","锅中油下姜片、蒜片、黄豆酱炒香，放鸡块中火炒干水分、表面微黄。","加生抽、老抽、冰糖炒上色，倒入泡香菇的水和适量热水，没过鸡肉。","大火烧开转小火焖20分钟，下土豆再焖10分钟，最后放青椒和盐，焖2分钟收汁出锅。"]},
+"烤鸭": { source:"《中国菜谱》·家庭烤箱版", ingredients:["白条鸭 1只（约1500克）","蜂蜜 30克","白醋 30毫升","料酒 20毫升","温水 30毫升","葱姜（填鸭腔）","甜面酱、黄瓜条、葱丝、薄饼 各适量"], steps:["鸭子洗净沥干，烧一锅开水均匀淋烫鸭皮3遍使皮收紧，再擦干水分。","蜂蜜、白醋、料酒、温水调成脆皮水，趁热在鸭身刷2–3遍，每遍都要刷完晾干。","把鸭子挂在通风处风干6–8小时（过夜最佳），到鸭皮紧绷干爽、不粘手，鸭腔塞入葱姜。","烤箱200℃预热，鸭胸朝上放在烤架上（下方放烤盘接油），烤50–60分钟，中途翻面、最后再刷一层蜂蜜水上色，烤到枣红酥脆。","片下皮带肉，配薄饼、葱丝、黄瓜条、甜面酱卷食。"]},
+"四喜丸子": { source:"老饭骨·鲁菜家宴做法", ingredients:["三肥七瘦猪肉馅 500克","荸荠（马蹄）80克","馒头渣 50克（泡水攥干）","鸡蛋 1个","葱姜末 各10克、葱姜花椒水80毫升","淀粉 20克","生抽20毫升、老抽8毫升","盐4克、白胡椒1克、八角2个"], steps:["荸荠拍碎切小丁，馒头泡水后攥干；肉馅加葱姜末、盐、生抽10毫升、料酒、白胡椒、鸡蛋。","葱姜花椒水分3次打进肉馅，每次都搅到吸收，顺一个方向搅打上劲，再放荸荠、馒头渣、淀粉拌匀，反复摔打到倒扣不掉。","双手沾水淀粉，把肉馅团成4个大丸子。","油温七成热下丸子，炸到表面金黄定型捞出。","丸子放大碗加高汤、生抽、老抽、八角，上锅小火蒸40分钟；滗出原汤勾芡，浇在丸子上即可。"]},
+"排骨铁锅炖": { source:"下厨房·东北铁锅炖", ingredients:["排骨 600克","甜玉米 1根","土豆 2个","豆角 200克","葱姜、八角2个、桂皮1小块","生抽 25毫升","豆瓣酱 15克","老抽8毫升、冰糖10克、盐4克"], steps:["排骨冷水下锅加料酒焯水撇沫，捞出洗净；玉米切段，土豆切块，豆角去筋。","铁锅中油下葱姜、八角、桂皮、豆瓣酱炒香，放排骨炒到微黄。","加生抽、老抽、冰糖上色，倒入没过排骨的热水，大火烧开转小火炖30分钟。","下玉米、土豆炖10分钟，再下豆角炖10分钟至熟。","加盐调好咸淡，开盖中火收浓汤汁，直接连锅端上桌。"]},
+"蒜香蒸排骨": { source:"豆果美食·粤式蒸菜", ingredients:["排骨 500克","蒜末 30克","豆豉 10克","生抽 15毫升","蚝油 10克","淀粉 15克","白糖5克、盐2克","食用油10毫升、红椒粒葱花"], steps:["排骨剁成小块，用清水浸泡20分钟去血水，捞出攥干。","蒜末分两份，一份用热油激成金银蒜，和生蒜、豆豉、生抽、蚝油、白糖、盐、淀粉一起拌入排骨。","加食用油封油，抓匀腌20分钟，平铺在盘中不要堆叠。","水开后上锅，大火蒸18–20分钟到脱骨，出锅撒红椒粒、葱花即可。"]},
+"虾仁蒸蛋": { source:"下厨房·高赞家常菜谱", ingredients:["鸡蛋 3个","鲜虾仁 8只（约120克）","温水 约200毫升（蛋液的1.5倍）","生抽 10毫升","香油 3毫升","盐 1克、料酒5毫升","葱花 适量"], steps:["虾仁去虾线，用料酒、少许盐腌5分钟；鸡蛋打散加1克盐。","加入约蛋液1.5倍的温水（35–40℃）轻轻搅匀，过筛2次倒入蒸盘，撇去浮沫。","盖上保鲜膜并扎几个小孔，水开后中小火蒸8分钟到表面刚凝固。","摆上虾仁再蒸3分钟，关火焖2分钟，淋生抽、香油，撒葱花即可。"]},
+"西红柿炒鸡蛋": { source:"下厨房·高赞家常菜谱", ingredients:["西红柿 2个（约350克）","鸡蛋 3个","白糖 8克","盐 3克","葱花 10克","食用油 适量"], steps:["西红柿去蒂切滚刀块（可先烫一下去皮）；鸡蛋打散加1克盐。","锅烧热多放些油，蛋液下锅大火快速炒成大块嫩蛋，刚凝固就盛出。","锅留底油下西红柿，中火炒出红汤、炒到出沙，加白糖中和酸味。","鸡蛋回锅翻匀，加剩余盐，撒葱花，大火翻匀10秒出锅。"]},
+"青椒土豆丝": { source:"下厨房·高赞家常菜谱", ingredients:["土豆 2个（约400克）","青椒 1个","干辣椒 5个","花椒 2克","白醋 10毫升","盐 3克","蒜片、葱花"], steps:["土豆去皮切成均匀细丝，用清水浸泡并换2次水洗去淀粉，青椒切丝。","锅中油下花椒、干辣椒、蒜片爆香。","下土豆丝大火快炒，沿锅边烹入白醋。","保持大火炒1.5–2分钟，到断生仍带脆感时下青椒丝、盐，快速翻匀立即出锅。"]},
+"麻辣香锅": { source:"下厨房·高赞家常菜谱", ingredients:["鲜虾、五花肉、午餐肉 共400克","莲藕、土豆、西蓝花、木耳 共600克","麻辣香锅底料 1袋（约100克）","干辣椒10克、花椒3克","蒜片、香菜、白芝麻","生抽 10毫升"], steps:["各类食材洗净切好，肉类腌一下，蔬菜分别焯水或过油到七八成熟，沥干备用。","锅中油下干辣椒、花椒、蒜片和香锅底料，小火炒出红油和香味。","先下肉类翻匀，再下耐炒的根茎类，最后下叶菜，全程中大火翻炒。","加生抽翻匀入味，出锅撒香菜段和熟白芝麻，趁热吃。"]},
+"红烧茄子": { source:"美食天下·经典菜谱", ingredients:["长茄子 2根（约400克）","青椒 1个","西红柿 半个（可选）","蒜 4瓣","生抽15毫升、老抽3毫升","白糖5克、香醋5毫升","淀粉 适量、盐2克"], steps:["茄子切滚刀块，加2克盐腌10分钟杀出水分，挤干后薄薄裹一层淀粉，减少吸油。","用生抽、老抽、白糖、香醋、淀粉5克、清水30毫升调一碗碗汁。","锅中稍多放油，下茄子中火煎到表面金黄变软，盛出。","锅留底油爆香蒜片，下青椒、西红柿炒几下，茄子回锅，淋入碗汁大火翻匀裹亮出锅。"]},
+"蔬菜鲜虾饼": { source:"豆果美食·营养早餐", ingredients:["鲜虾仁 200克","胡萝卜 50克","西兰花 80克（或玉米粒）","蛋清 1个","淀粉 15克","盐2克、白胡椒1克","料酒 5毫升"], steps:["虾仁剁成虾泥（保留少许颗粒更有口感），胡萝卜、西兰花焯水后切碎。","虾泥加蛋清、淀粉、盐、白胡椒、料酒，顺一个方向搅打上劲，再拌入蔬菜碎。","双手沾水取虾泥，压成小饼。","平底锅刷油，中小火把虾饼每面煎3分钟，到两面金黄、内部熟透即可。"]},
+"小炒牛肉": { source:"美食台·湘菜嫩滑技法", ingredients:["牛里脊 300克","青椒、小米辣 适量","蒜片、姜片","香菜 1把","生抽10毫升、蚝油10克","淀粉10克、料酒10毫升","盐2克、白胡椒、小苏打1克"], steps:["牛肉逆着纹路切薄片，加生抽、料酒、淀粉、小苏打和一勺油抓匀腌15分钟。","用生抽、蚝油、白胡椒、少许水调一碗碗汁。","锅烧到冒烟，宽油大火下牛肉快速滑炒到变色（约30秒）立即盛出。","爆香姜蒜、辣椒，牛肉回锅，淋入碗汁，大火快炒20秒，撒香菜出锅。"]},
+"煎牛肉饼": { source:"豆果美食", ingredients:["牛肉馅 300克","洋葱 半个（约80克）","鸡蛋 1个","面包糠 20克","生抽 10毫升","淀粉 10克","盐3克、黑胡椒2克、料酒"], steps:["洋葱切碎，小火炒软晾凉；牛肉馅加鸡蛋、面包糠、洋葱、生抽、盐、黑胡椒、淀粉。","顺一个方向搅打上劲，分成小团按成1.5厘米厚的饼。","平底锅放少许油，中小火把肉饼每面煎3–4分钟。","煎到两面焦香、内部刚熟无血水，可淋少许黑椒汁出锅。"]},
+"鱼香肉丝": { source:"东方美食·川菜鱼香味型", ingredients:["猪里脊 300克","水发木耳 50克","胡萝卜 半根、青椒1个","冬笋（莴笋）50克","泡椒（剁辣椒）20克","葱姜蒜末","生抽15毫升、米醋15毫升、白糖15克","淀粉15克、料酒10毫升"], steps:["里脊切丝，加盐、料酒、淀粉抓匀封油；木耳、胡萝卜、青椒、冬笋都切丝并焯水。","用生抽、米醋、白糖、淀粉5克、清水25毫升调鱼香汁，做到酸甜咸平衡。","热锅凉油下肉丝滑散变白，盛出。","底油下泡椒、姜蒜末，小火炒出红油和香味，下配菜丝炒到断生。","肉丝回锅，淋入鱼香汁，大火翻炒裹匀，撒葱花出锅。"]},
+"清炒包菜": { source:"下厨房·高赞家常菜谱", ingredients:["包菜（圆白菜）半颗约400克","干辣椒 5个","蒜 3瓣","花椒 2克","生抽 10毫升","香醋 5毫升","盐2克、白糖3克"], steps:["包菜撕成大片，去掉硬梗，洗净后充分沥干，这是不出水的关键。","锅中油下花椒、干辣椒、蒜片爆香。","下包菜大火快炒，沿锅边淋入香醋。","炒到包菜断生略塌、仍带脆感，加生抽、盐、糖快速翻匀出锅。"]},
+"蚂蚁上树": { source:"美食天下·经典菜谱", ingredients:["红薯粉丝 1把（约150克）","猪肉末 150克","郫县豆瓣酱 20克","葱姜蒜 适量","生抽15毫升、老抽5毫升","料酒10毫升、白糖3克","葱花"], steps:["红薯粉丝用温水泡软（约15分钟，别泡烂），捞出剪短一些。","锅中油下肉末炒散，炒到变色出油，加豆瓣酱、姜蒜末炒出红油。","烹料酒，加生抽、老抽、白糖和小半碗热水烧开。","下粉丝，用筷子拌炒让粉丝吸满汤汁，中火收到汤汁将干，撒葱花出锅。"]},
+"蒜薹炒肉": { source:"下厨房·高赞家常菜谱", ingredients:["蒜薹 300克","猪瘦肉 150克","姜丝","生抽 15毫升","老抽 3毫升","料酒 10毫升","淀粉 8克、盐2克"], steps:["蒜薹去头尾切4厘米段；肉切丝，加生抽、料酒、淀粉抓匀腌10分钟。","锅中油下肉丝滑炒变色，盛出。","底油下蒜薹中火炒到表皮起皱、断生，可淋少许水焖1分钟。","肉丝回锅，加生抽、老抽、盐，大火翻匀入味出锅。"]},
+"干锅花菜": { source:"美食天下·湘赣家常菜", ingredients:["花菜 1颗（约500克）","五花肉 100克","干辣椒 8个","蒜片、蒜苗","豆瓣酱 15克","生抽 10毫升","盐2克、白糖3克"], steps:["花菜掰成小朵，用淡盐水泡10分钟洗净，充分沥干，先干煸或少油煎到边缘微焦盛出。","五花肉切薄片，下锅小火煸出油到微卷。","下豆瓣酱、干辣椒、蒜片炒香，再下花菜中大火翻炒。","炒到花菜断生带焦香，加生抽、盐、糖，最后下蒜苗段翻匀，用干锅或砂锅盛装。"]},
+"白菜猪肉炖粉条": { source:"下厨房·东北家常菜", ingredients:["大白菜 500克","五花肉 200克","红薯粉条 100克","葱姜、八角1个","生抽 20毫升","老抽 5毫升","料酒 10毫升","盐 3克"], steps:["粉条用温水泡软；五花肉切片，白菜帮和叶分开切大片。","锅中下五花肉片小火煸出油，加葱姜、八角炒香，烹料酒、生抽、老抽。","先下白菜帮炒软，再下白菜叶，炒到塌软出汤。","加适量热水和粉条，中小火炖10–15分钟到粉条透明，加盐调好出锅。"]},
+"白灼虾": { source:"豆果美食·粤式白灼", ingredients:["鲜虾 500克","姜 3片、葱2根","料酒 15毫升","生抽 20毫升","蒜末、红椒丝","香醋 10毫升"], steps:["鲜虾剪须、挑虾线洗净；用生抽、蒜末、红椒丝、少许香醋调蘸汁。","锅中加水，放姜片、葱结、料酒，大火烧开。","水滚后下虾，保持大火煮2–3分钟，虾身弯曲变红立即捞出。","迅速过冰水让虾肉紧实弹牙，沥干后配蘸汁食用。"]},
+"香菇油菜": { source:"下厨房·高赞家常菜谱", ingredients:["油菜（小棠菜）400克","鲜香菇 150克","蒜 3瓣","蚝油 15克","生抽 10毫升","淀粉5克、盐2克、白糖3克"], steps:["油菜对半剖开洗净，香菇切片；沸水加少许油和盐，把油菜焯30秒捞出摆盘。","锅中油爆香蒜末，下香菇炒软出香。","加蚝油、生抽、白糖和3勺水烧1分钟。","淋水淀粉勾薄芡，把香菇连汁浇在油菜上即可。"]},
+"黄瓜炒鸡蛋": { source:"下厨房·高赞家常菜谱", ingredients:["黄瓜 2根","鸡蛋 3个","蒜片","盐 3克","白糖 2克","食用油 适量"], steps:["黄瓜洗净切菱形片，加少许盐腌2分钟；鸡蛋打散加1克盐。","热锅宽油下蛋液，炒成嫩蛋块盛出。","锅留底油爆香蒜片，下黄瓜中火快炒30秒到刚断生。","鸡蛋回锅，加盐、少许糖，大火翻匀立即出锅，保持黄瓜脆嫩。"]},
+"京酱肉丝": { source:"东方美食·京菜技法", ingredients:["猪里脊 300克","甜面酱 40克","葱白 2根","豆腐皮（千张）2张","蛋清 1个、淀粉15克","白糖 10克、生抽10毫升","料酒 10毫升、姜"], steps:["里脊切丝，加蛋清、淀粉、料酒抓匀上浆；葱白切细丝铺盘底，豆腐皮切方块蒸软。","甜面酱加白糖、少许清水澥开。","热锅宽油、三四成热下肉丝滑散变白，捞出沥油。","锅留底油下甜面酱，小火炒香出酱色，下肉丝翻匀裹满酱汁。","盛在葱丝上，吃时用豆腐皮卷肉丝和葱丝。"]},
+"干煸豆角": { source:"美食天下·川菜家常", ingredients:["四季豆（豆角）400克","猪肉末 100克","芽菜（榨菜）30克","干辣椒 8个、花椒2克","蒜末","生抽10毫升、盐2克、白糖3克"], steps:["豆角去筋掰段，擦干水分；锅中稍多油，中大火把豆角煸到表皮起皱、出现焦斑（虎皮状）盛出。","锅留底油下肉末炒散，加芽菜、干辣椒、花椒、蒜末炒香。","豆角回锅同炒，加生抽、盐、糖调味。","中火煸炒均匀、豆角熟透入味后出锅。"]},
+"总督豆腐": { source:"《中国菜谱》·冀菜直隶官府菜", ingredients:["北豆腐（或鸡蛋豆腐）400克","猪肉末 80克","海米（虾籽）15克","干贝 20克（泡发撕丝）","姜蒜末、青蒜20克","泡辣椒/辣酱 15克","生抽15毫升、料酒10毫升","白糖5克、盐、高汤150毫升、水淀粉"], steps:["豆腐切成3厘米块，油温六成热下豆腐炸到表面金黄微硬，捞出沥油。","锅留底油下肉末煸散，加姜蒜末、泡辣椒、辣酱炒出红油。","烹料酒，加生抽、白糖、少许盐，放海米、干贝丝炒香。","加高汤和豆腐，大火烧开转中小火烧3–5分钟入味。","分两次淋水淀粉勾芡，到汤汁浓稠裹住豆腐，撒青蒜末出锅。"]},
+"蒜黄炒鸡蛋": { source:"下厨房·高赞家常菜谱", ingredients:["蒜黄 300克","鸡蛋 3个","盐 3克","白糖 2克","姜丝","食用油 适量"], steps:["蒜黄洗净切4厘米段，梗和叶分开；鸡蛋打散加1克盐。","热锅宽油下蛋液炒成嫩蛋块，盛出。","锅留底油下姜丝，先炒蒜黄梗20秒，再下蒜黄叶。","大火快炒到刚塌软，鸡蛋回锅，加盐、糖快速翻匀出锅。"]},
+"清炒丝瓜": { source:"下厨房·高赞家常菜谱", ingredients:["丝瓜 2根（约400克）","蒜 3瓣","盐 2克","白糖 2克","食用油 适量"], steps:["丝瓜去皮切滚刀块，快切快炒、避免用铁锅以防发黑；蒜切片。","锅中油爆香蒜片。","下丝瓜大火快炒，加2勺清水。","炒1–2分钟到丝瓜变软透亮，加盐、糖翻匀立即出锅。"]},
+"辣炒花蛤": { source:"下厨房·高赞家常菜谱", ingredients:["花蛤 500克","干辣椒 6个、小米辣","葱姜蒜","豆瓣酱 10克","生抽 10毫升","料酒 15毫升","白糖3克、香菜"], steps:["花蛤用淡盐水加几滴香油吐沙2小时，反复搓洗干净。","沸水焯到花蛤刚开口立即捞出，不开口的丢弃，冲洗沥干。","锅中油下葱姜蒜、干辣椒、豆瓣酱炒香。","下花蛤大火爆炒，烹料酒，加生抽、糖快速翻匀，撒香菜出锅，不要久炒以免肉老。"]},
+"葱烧豆腐": { source:"东方美食·鲁菜葱烧技法", ingredients:["北豆腐 1块（约400克）","大葱 2根（取葱白）","生抽15毫升、老抽5毫升","蚝油 10克","白糖 5克","高汤（水）150毫升","淀粉、盐"], steps:["豆腐切厚片，用平底锅中火煎到两面金黄定型，盛出。","葱白切5厘米段，锅留底油下葱段，中小火慢煎到微黄、煎出浓郁葱香，这是葱烧关键。","加生抽、老抽、蚝油、白糖和高汤烧开。","下豆腐，中小火烧3分钟让豆腐吸足葱香，淋水淀粉勾薄芡，汤汁裹亮出锅。"]},
+"肉末豆腐": { source:"下厨房·高赞家常菜谱", ingredients:["嫩豆腐 1盒（约400克）","猪肉末 150克","葱姜蒜","豆瓣酱 10克（可选）","生抽15毫升、老抽3毫升","淀粉8克、盐2克、白糖3克"], steps:["嫩豆腐切2厘米块，用淡盐水焯1分钟去豆腥，捞出沥干。","锅中油下肉末炒散变色，加姜蒜末、豆瓣酱炒香。","加生抽、老抽、糖和半碗热水烧开。","轻轻推入豆腐，中小火烧3分钟入味，淋水淀粉勾芡，轻推裹汁，撒葱花出锅。"]},
+"茄子烧豆角": { source:"下厨房·高赞家常菜谱", ingredients:["长茄子 2根","豆角 250克","蒜 4瓣","生抽15毫升、蚝油10克、老抽3毫升","白糖3克、盐2克","淀粉 5克"], steps:["茄子切条用盐腌10分钟后挤干；豆角去筋掰段，用微波或干煸到变软起皱。","锅中油先下豆角煸出虎皮盛出，再下茄子煎软盛出。","爆香蒜末，下茄子和豆角，加生抽、蚝油、老抽、糖和3勺水。","中火烧2分钟入味，淋薄芡翻匀出锅。"]},
+"蒜苔炒肉": { source:"下厨房·高赞家常菜谱", ingredients:["蒜苔 300克","猪瘦肉 150克","姜丝","生抽 15毫升","老抽 3毫升","料酒 10毫升","淀粉8克、盐2克"], steps:["蒜苔切4厘米段，瘦肉切丝，加生抽、料酒、淀粉腌10分钟。","热油下肉丝滑散变色，盛出。","下蒜苔中火翻炒，淋少许水焖1分钟到断生。","肉丝回锅，加老抽、盐大火翻匀出锅。"]},
+"青椒酿肉": { source:"下厨房·高赞家常菜谱", ingredients:["青椒 6个","猪肉馅 250克","葱姜水","生抽15毫升、蚝油10克","淀粉 15克","蛋液、蒜片","盐2克、白糖3克"], steps:["肉馅加葱姜水、生抽、蚝油、盐、淀粉、蛋液搅打上劲。","青椒去籽剖成两半（或整只去蒂），内侧拍一层干淀粉，填满肉馅压实。","平底锅放少许油，肉馅一面朝下中小火煎到金黄定型，再翻面把青椒煎出虎皮。","用生抽、糖、半碗水调汁淋入，盖盖焖3分钟，开盖收汁即可。"]},
+"黄瓜拉皮": { source:"下厨房·东北凉菜", ingredients:["鲜拉皮（或干粉皮）300克","黄瓜 1根、胡萝卜半根","蒜末、香菜","芝麻酱 30克","生抽15毫升、香醋15毫升","盐2克、糖5克","辣椒油、芥末油（可选）"], steps:["拉皮用凉开水冲散沥干（干粉皮提前用温水泡软），黄瓜、胡萝卜切丝。","芝麻酱用温水澥开，加生抽、香醋、盐、糖、蒜末调成麻酱汁。","盘中黄瓜丝垫底，盖上拉皮，浇麻酱汁。","吃前加辣椒油、香菜拌匀即可。"]},
+"凉拌菠菜": { source:"下厨房·高赞家常菜谱", ingredients:["菠菜 400克","花生米 50克（可选）","蒜 3瓣","生抽10毫升、香醋10毫升","盐2克、糖3克、香油5毫升","白芝麻"], steps:["菠菜择洗干净，沸水加少许油和盐焯30秒，捞出过凉水，攥干切段。","花生米小火炒熟晾凉。","用蒜末、生抽、香醋、盐、糖、香油调成汁。","菠菜装盘放花生米，浇汁拌匀，撒白芝麻。"]},
+"凉拌苦菊": { source:"豆果美食·爽口凉菜", ingredients:["苦菊 1把（约300克）","蒜末","花生米碎","生抽 10毫升","香醋 15毫升","白糖5克、盐1克、香油5毫升","辣椒油（可选）"], steps:["苦菊摘洗，用淡盐水泡10分钟，凉开水冲净沥干，掐成段。","用生抽、香醋、白糖、盐、香油、蒜末调成酸甜汁。","苦菊装盘，临吃前再淋汁，避免久放塌软。","撒花生米碎，拌匀即食。"]},
+"腌萝卜": { source:"下厨房·高赞家常菜谱", ingredients:["白萝卜 1根（约800克）","小米辣、蒜片、姜片","米醋 150毫升","白糖 60克","盐 15克、生抽30毫升","凉白开 适量"], steps:["萝卜洗净切条或切片，加10克盐抓匀腌1小时杀出辛辣水，倒掉并用凉白开冲洗、攥干。","锅中放米醋、白糖、剩余盐、生抽和等量凉白开，加热到糖化后放凉成腌汁。","无水无油的密封罐放萝卜、蒜姜、小米辣，倒入腌汁没过萝卜。","密封冷藏，4小时后可食，隔夜更入味，3天内吃完保持爽脆。"]},
+"炸花生米": { source:"美食天下·经典菜谱", ingredients:["花生米 250克","食用油 适量","白酒 3毫升","盐 3克"], steps:["花生米挑去坏粒，用湿抹布擦净，不要水洗，表面必须晾干。","冷锅冷油下花生米，中小火不停翻炒。","炒到花生米变色、听到密集噼啪声、闻到香味就关火，余温会继续加热。","趁热淋几滴白酒翻匀，摊开晾凉后撒盐，凉透才会酥脆。"]},
+"凉拌猪头肉": { source:"下厨房·家常凉菜", ingredients:["熟卤猪头肉 300克","黄瓜 1根","蒜末、香菜","生抽 15毫升","香醋 10毫升","辣椒油 10克","白糖3克、盐1克、香油、熟芝麻"], steps:["猪头肉切薄片，黄瓜拍碎或切丝垫底。","用蒜末、生抽、香醋、白糖、盐、香油、辣椒油调汁。","肉片和黄瓜放盆中，淋入料汁。","加香菜段、熟芝麻拌匀装盘。"]},
+"小葱拌豆腐": { source:"下厨房·高赞家常菜谱", ingredients:["嫩豆腐（北豆腐）300克","小葱 3根","盐 2克","生抽 5毫升（可选）","香油 8毫升","鸡精 少许"], steps:["豆腐切1.5厘米小丁，沸水加少许盐焯1分钟去豆腥，捞出过凉沥干。","小葱切葱花，葱白葱绿分开放。","豆腐装盘，撒葱花、盐、少许鸡精。","淋香油（可加少许生抽），吃时轻轻拌匀。"]},
+"熏肠": { source:"下厨房·熟食家常处理", ingredients:["熟熏肠（红肠）300克","食用油 少许","蒜片（可选）"], steps:["熏肠本身是熟制成品，家常做法以加热煎香为主，无需复杂调味。","剥去外衣，斜切成0.5厘米片（整根上锅蒸10分钟加热也可）。","平底锅刷薄油，中小火把肠片下锅。","每面煎1–2分钟到边缘微卷、出油焦香，可配蒜片同食，也可夹饼、配面。"]},
+"芹菜花生": { source:"豆果美食·爽口小菜", ingredients:["花生米 200克","芹菜 200克","胡萝卜 半根","花椒、八角1个","盐 4克","香油 5毫升","鸡精 少许"], steps:["花生米提前泡2小时，冷水下锅加八角、花椒、2克盐煮15分钟，到熟而带脆，捞出晾凉。","芹菜去筋切小丁，胡萝卜切丁，沸水焯1分钟捞出过凉沥干。","三样放盆中，加盐、鸡精。","可炸点花椒油趁热激香，最后淋香油拌匀。"]},
+"黄瓜拌油条": { source:"下厨房·山东凉菜", ingredients:["油条 2根","黄瓜 2根","蒜末、香菜","芝麻酱 20克","生抽10毫升、香醋10毫升","盐1克、糖3克","辣椒油（可选）"], steps:["油条掰成3厘米段，可低温烘1分钟回脆；黄瓜拍碎切块。","芝麻酱澥开，加蒜末、生抽、香醋、盐、糖调成汁。","黄瓜装盘垫底，上桌前再撒油条段，避免泡软。","淋麻酱汁、辣椒油，撒香菜，现拌现吃保持油条酥脆。"]},
+"麻酱面藕": { source:"下厨房·高赞家常菜谱", ingredients:["干面藕 150克","黄瓜 1根、香菜","芝麻酱 40克","蒜末 15克、辣椒面5克、白芝麻5克","生抽20毫升、陈醋15毫升","盐2克、白糖5克","热油 20毫升"], steps:["干面藕用温水泡30–60分钟，到完全变软、捏开无硬心，反复攥干水分。","蒜末、辣椒面、白芝麻放碗里浇热油激香；芝麻酱用温水澥成酸奶状。","碗中加生抽、陈醋、盐、糖和澥好的芝麻酱搅匀成料汁。","面藕加黄瓜丝、香菜，倒入料汁抓拌均匀，让面藕吸满料汁即可。"]},
+"烙饼": { source:"下厨房·家常面饼", ingredients:["中筋面粉 500克","温水 300毫升（约40℃）","盐 3克","食用油、油酥","葱花、花椒粉（葱油饼用）"], steps:["面粉加盐，分次加温水拌成絮状，揉成光滑面团，盖湿布醒30分钟。","面团分剂擀开，刷一层油酥（油拌面粉），撒盐或葱花，卷起盘成圆饼再擀薄。","平底锅中小火，饼坯下锅，盖上盖子烙。","一面烙到金黄起泡翻面，两面金黄后用锅铲从边缘向中间怼松层次，出锅。"]},
+"米饭": { source:"中国烹饪协会教材·基础主食", ingredients:["大米 300克","清水 360毫升（米水比1:1.2）"], steps:["大米淘洗2遍即可，不要反复揉搓，然后沥水。","按米水比1:1.2加水（新米减20毫升、陈米加20毫升），浸泡20分钟。","电饭煲启动煮饭；普通锅先大火煮开，再转最小火焖12分钟。","关火后继续焖10分钟，用饭勺翻松、散去多余水汽。"]},
+"鸡蛋挂面": { source:"下厨房·快手汤面", ingredients:["挂面 200克","鸡蛋 2个","青菜","葱花","生抽 15毫升","香油5毫升、盐3克","猪油5克（提香，可选）"], steps:["碗中放生抽、猪油、葱花、盐，冲入半碗煮面热汤做成汤底。","锅中水烧开，下挂面煮到将熟。","另起锅把鸡蛋卧成荷包蛋（或先煎一个蛋）。","青菜烫熟，把面、蛋、菜捞入碗中，淋香油即可。"]},
+"面条": { source:"美食天下·基础阳春面", ingredients:["鲜面条（挂面）300克","葱花","生抽 15毫升","香醋5毫升、香油5毫升","猪油 5克","盐 2克、青菜"], steps:["碗底放猪油、生抽、香醋、盐、葱花。","舀两勺滚烫的面汤冲入碗中，把猪油和葱花冲香做成汤底。","锅中宽水烧开下面，挂面约煮5分钟、鲜面约3分钟，煮到适口。","面条捞入汤碗，烫几棵青菜铺上即可。"]},
+"小米南瓜粥": { source:"下厨房·高赞家常菜谱", ingredients:["小米 100克","南瓜 250克","清水 1200毫升"], steps:["小米淘洗后浸泡20分钟；南瓜去皮去瓤切小块。","锅中加水烧开后下小米，大火煮开转小火。","熬15分钟后下南瓜块，继续小火熬20分钟，期间搅动几次防粘。","熬到小米开花、南瓜融化、粥体浓稠即可，南瓜本身有甜味，一般不用加糖。"]},
+"饺子": { source:"下厨房·高赞家常菜谱", ingredients:["饺子 30个（2–3人份）","清水 足量","醋、蒜末（蘸汁）"], steps:["锅中加足量水（不少于2500毫升）大火烧开，水要宽。","水沸下饺子，用勺背沿锅边轻推，防止粘底。","再次沸腾点一碗冷水，如此重复2–3次（肉馅点3次、素馅点2次）。","饺子全部鼓起浮面、饺子皮透亮，再煮1分钟捞出，配醋蒜汁。"]},
+"炒馒头": { source:"豆果美食·快手主食", ingredients:["凉馒头 2个","鸡蛋 2个","盐 2克","椒盐（孜然粉）","葱花","火腿肠丁、青豆（可选）"], steps:["馒头切1.5厘米丁；鸡蛋打散加1克盐，把馒头丁倒入蛋液中裹匀。","平底锅多放些油，下馒头丁中小火翻炒。","炒到每面金黄酥脆、粒粒分明。","可下火腿丁、青豆同炒，撒椒盐和葱花翻匀出锅。"]},
+"豆角焖面": { source:"下厨房·山西/河南焖面", ingredients:["鲜面条（细蒸面）400克","豆角 250克","五花肉 100克","蒜片、葱姜","生抽20毫升、老抽8毫升","料酒10毫升、盐3克","香醋 5毫升"], steps:["豆角去筋掰段，五花肉切片；面条可先蒸8分钟到半熟，抖散拌少许油防粘。","锅中下肉片煸出油，加葱姜、豆角翻炒变色，加生抽、老抽、料酒、盐和没过菜的热水。","盛出半碗汤汁备用，把面条松散铺在菜上，盖盖中小火焖8分钟。","汤汁快干时沿边淋回预留汤汁，再焖2分钟，加蒜片、香醋，用筷子挑拌均匀出锅。"]},
+"大米粥": { source:"下厨房·绵白粥做法", ingredients:["大米 100克","清水 1000–1200毫升","食用油 几滴（可选）"], steps:["大米淘洗后浸泡20–30分钟（提前冷冻一晚更容易煮开花）。","水烧开下米，大火煮滚搅几下防粘。","转最小火、半盖锅盖熬30–40分钟，每10分钟搅一次。","熬到米粒开花、米汤浓稠挂勺，喜欢绵密可多搅几下出锅。"]},
+"玉米粥": { source:"豆果美食", ingredients:["细玉米面 80克","清水 1000毫升"], steps:["玉米面先用少量凉水搅成无颗粒的稀糊，防止下锅结块。","锅中水烧开，把玉米糊边搅边缓缓倒入。","大火煮开后转小火，并不停搅拌。","熬5–8分钟到粥面泛油光、浓稠顺滑即可。"]},
+"椒盐花卷": { source:"下厨房·发面主食", ingredients:["中筋面粉 500克","温水 260毫升","干酵母 5克","白糖10克、盐3克","椒盐、食用油","葱花（可选）"], steps:["温水化开酵母和糖，倒入面粉揉成光滑面团，28℃发酵到2倍大（约1小时）。","排气擀成长方形薄片，刷油，均匀撒椒盐（和葱花）。","折叠切条，两三条叠起用筷子压纹、拧成花卷。","二次醒发15分钟，水开后中火蒸12分钟，关火焖3分钟再开盖。"]},
+"小馄饨": { source:"美食天下·鲜汤小馄饨", ingredients:["小馄饨皮 30张","猪肉馅 200克","葱姜水","虾皮、紫菜、葱花","生抽、香油","盐、白胡椒"], steps:["肉馅加葱姜水、盐、生抽、香油，顺一个方向搅打上劲。","取一张小皮放少许馅，对角收拢捏成小馄饨。","碗中放虾皮、紫菜、葱花、生抽、香油、白胡椒，冲入热高汤。","水沸下馄饨，煮到全部浮起、皮透亮即捞入汤碗。"]},
+"牛肉板面": { source:"厨师之家·安徽太和板面", ingredients:["宽板面（鲜宽面）300克","牛瘦肉 200克","牛油（或食用油）","干辣椒15克（提前泡软）","郫县豆瓣15克","八角、桂皮、香叶、草果、小茴香、白芷","葱姜洋葱","生抽20毫升、老抽8毫升、盐、青菜、卤蛋"], steps:["牛肉切小丁；锅中油先下葱姜、洋葱、香菜炸到焦黄捞出。","转小火下八角、桂皮、香叶、草果、小茴香、白芷炸香，再下泡软的干辣椒炒出香味。","下牛肉丁煸干，加豆瓣酱炒出红油，烹生抽、老抽，加热水没过，小火炖40分钟成牛肉卤子，加盐。","另起锅宽水煮熟宽面和青菜，捞入碗中浇一勺面汤。","浇上牛肉卤子和辣椒卤油，配卤蛋拌匀食用。"]},
+"炒饼": { source:"下厨房·北方炒饼丝", ingredients:["烙饼（剩饼）300克","圆白菜 150克","肉丝 100克","蒜片、葱姜","生抽15毫升、老抽5毫升","香醋 8毫升、盐2克"], steps:["饼切细丝，圆白菜切丝，肉丝用生抽、淀粉腌一下。","锅中油下肉丝滑散，加葱姜、圆白菜丝大火炒到断生。","加生抽、老抽、盐和少许水，把饼丝松散铺在菜上，盖盖小火焖2分钟。","开盖加蒜片，沿锅边淋醋，用筷子挑炒均匀、饼丝热透出锅。"]},
+"麻酱凉皮": { source:"下厨房·陕西凉皮", ingredients:["凉皮 2张（约350克）","黄瓜 1根、绿豆芽","面筋（可选）","芝麻酱 40克","蒜水、生抽15毫升、香醋15毫升","盐2克、糖3克","辣椒油"], steps:["凉皮切宽条；绿豆芽焯水过凉，黄瓜切丝。","芝麻酱用凉白开澥成流泻状，加蒜水、生抽、香醋、盐、糖调成麻酱汁。","碗中放凉皮、面筋、豆芽、黄瓜丝。","浇麻酱汁和油泼辣子，吃时拌匀。"]},
+"炒方便面": { source:"豆果美食·夜宵快手", ingredients:["方便面 2包","鸡蛋 2个","火腿肠、青菜、洋葱","生抽10毫升、老抽5毫升","方便面调料 半包","香醋（可选）"], steps:["方便面煮到刚散开（约1分钟，别煮软），立即捞出过凉、沥干，拌少许油防粘。","鸡蛋炒熟盛出；火腿肠、洋葱切片，青菜洗净。","锅中油爆香洋葱，下青菜、火腿翻炒，再下方便面。","加生抽、老抽和半包调料粉，大火用筷子挑炒均匀，鸡蛋回锅翻匀出锅。"]},
+"炸酱面": { source:"东方美食·老北京小碗干炸", ingredients:["手擀面（挂面）350克","猪肉末（肥三瘦七）250克","干黄酱 40克","甜面酱 30克","葱姜末","黄瓜丝、萝卜丝、豆芽、青豆（面码）","白糖5克、料酒"], steps:["干黄酱和甜面酱按比例加少许清水澥开。","锅中多放油下肉末，中小火煸到出油酥香，加葱姜末、料酒。","倒入澥好的酱，小火不停翻炒15–20分钟，到酱色油亮、酱肉分离，加糖提鲜。","面条煮熟过水捞入碗，浇上炸肉酱。","铺上黄瓜丝等各色面码，拌匀食用。"]},
+"油条": { source:"下厨房·蓬松油条", ingredients:["中筋面粉 500克","温水 300毫升","鸡蛋 1个","干酵母5克（或泡打粉8克）","盐6克、小苏打2克","和面油15毫升"], steps:["面粉加酵母、盐、小苏打、鸡蛋，分次加温水揉成软面团，抹油盖好冷藏发酵过夜。","面团回温后不要揉，擀成0.5厘米厚的长条，切成2厘米宽的小条，两条叠起用筷子在中间压痕。","油温七成热（约200℃），捏住两头轻轻抻长下锅。","不断翻动，炸到金黄蓬松膨大，捞出沥油，趁热配豆浆。"]},
+"豆腐脑": { source:"美食天下·咸卤豆腐脑", ingredients:["内脂豆腐（嫩豆腐）1盒","干木耳15克、黄花菜15克、香菇","鸡蛋 1个","生抽 15毫升","淀粉 20克","盐、虾皮、香菜、辣椒油"], steps:["木耳、黄花菜泡发切丝，香菇切丁；嫩豆腐整盒隔水蒸8分钟。","锅中加高汤或水600毫升，下木耳、黄花菜、香菇煮5分钟，加生抽、盐。","鸡蛋打散淋成蛋花，用淀粉20克加水40毫升的水淀粉分次勾稠成卤。","嫩豆腐舀入碗，浇上卤汁，加虾皮、香菜、辣椒油即可。"]},
+"发面火烧": { source:"下厨房·发面烧饼", ingredients:["中筋面粉 500克","温水 280毫升","酵母 5克","盐3克、椒盐（五香粉）","油酥（面粉20克+热油30毫升）","白芝麻"], steps:["酵母用温水化开，加面粉、盐揉成光滑面团，发酵到2倍大。","排气擀片，抹油酥、撒椒盐，卷起分剂，做成圆饼，表面刷水蘸上白芝麻。","二次醒发15分钟。","平底锅小火烙到两面定型微黄，再入烤箱180℃烤10分钟（或锅中小火盖盖烙熟），到外脆内软。"]},
+"油泼面": { source:"下厨房·陕西油泼面", ingredients:["宽面（扯面/刀削面）300克","青菜","蒜末20克、葱花","辣椒面 10克、白芝麻","生抽20毫升、香醋15毫升","盐2克","滚烫热油 30毫升"], steps:["宽面煮熟，最后烫几棵青菜，一起捞入大碗，留少许面汤。","面上放蒜末、葱花、辣椒面、白芝麻、盐。","生抽、香醋沿碗边淋入。","油温烧到冒烟（约220℃），均匀泼在辣椒面和蒜末上激出香味，趁热拌匀。"]},
+"椒盐葱花饼": { source:"下厨房·半烫面葱油饼", ingredients:["中筋面粉 500克","热水200毫升+凉水80毫升","盐 3克","小葱花 100克","椒盐、食用油"], steps:["面粉加盐，先加热水拌絮再淋凉水，揉成软面团醒30分钟。","分剂擀薄，刷油，撒椒盐和大量葱花，卷起盘圆再擀薄。","平底锅刷油，中小火下饼，盖上盖烙。","两面烙到金黄酥脆，出锅前抖散层次，切块食用。"]},
+"馒头": { source:"中国烹饪协会教材·基础发面", ingredients:["中筋面粉 500克","温水 250毫升","干酵母 5克","白糖 10克"], steps:["35℃温水化开酵母和糖，倒入面粉揉成手光、盆光、面光的光滑面团。","28℃发酵到2倍大，内部呈蜂窝状。","充分排气揉成长条，分剂揉成光滑圆馒头，二次醒发15分钟到轻压能回弹。","水开上锅，中火蒸15分钟，关火焖3分钟再开盖，防止回缩。"]},
+"披萨": { source:"下厨房·家庭烘焙", ingredients:["披萨饼底 2个（6–8寸）","马苏里拉芝士 150克","披萨酱（番茄酱）40克","培根/火腿/虾仁","青红椒、洋葱、玉米粒","橄榄油"], steps:["饼底抹一层披萨酱，撒第一层芝士。","均匀铺肉类和蔬菜配料，水分大的食材要先焯或炒干。","表面再铺满马苏里拉芝士。","烤箱200℃预热，中层烤12–15分钟，到芝士融化、边缘金黄、出现焦斑即可。"]},
+"煎蛋": { source:"下厨房·高赞家常菜谱", ingredients:["鸡蛋 2个","食用油 10毫升","盐 1克","清水 10毫升（嫩口）","黑胡椒 少许"], steps:["平底锅中小火预热，刷一层油。","鸡蛋打入，保持中小火，蛋白开始凝固时沿边淋10毫升清水。","加盖焖1–2分钟：溏心蛋煎到蛋白凝固、蛋黄流动，全熟则多焖1分钟。","撒盐和黑胡椒，轻轻铲出。"]},
+"酱肉包子": { source:"下厨房·酱肉包", ingredients:["中筋面粉 500克","温水 260毫升、酵母5克","酱肉丁（猪肉馅）300克","甜面酱20克、黄豆酱10克","葱姜、生抽、白糖、料酒"], steps:["酵母用温水化开和面，发酵到2倍大；肉馅加甜面酱、黄豆酱、生抽、糖、料酒、葱姜炒熟成酱肉馅，放凉。","发面排气分剂，擀成中间厚、边缘薄的包子皮。","包入酱肉馅捏褶收口，二次醒发15分钟。","水开上锅，大火蒸12–15分钟，关火焖3分钟再开盖。"]},
+"皮蛋瘦肉粥": { source:"豆果美食·粤式粥品", ingredients:["大米 100克","皮蛋 2个","瘦猪肉 150克","姜丝、葱花","盐、白胡椒","淀粉5克、料酒","香油"], steps:["大米淘洗后加少许油、盐腌15分钟，按米水1:10加水，大火煮开转小火熬30分钟成绵粥。","瘦肉切薄片，用盐、淀粉、料酒腌10分钟；皮蛋切小块。","粥熬稠后先下一半皮蛋和姜丝煮5分钟，再下肉片拨散煮3分钟。","下剩余皮蛋，加盐、白胡椒调味，出锅撒葱花、淋香油。"]},
+"脆皮糖糕": { source:"美食天下·河南炸糖糕", ingredients:["普通面粉 300克","开水 600毫升（水面约2:1）","烫面用白糖20克、油20毫升","糖馅：白糖100克","糖馅：熟面粉30克、熟芝麻15克"], steps:["锅中加水600毫升、糖20克、油20毫升烧开，转最小火倒入300克面粉，快速搅到无干粉、面团细腻不粘锅，盖盖焖5分钟。","烫面摊开切块晾到不烫手，加少许干面粉和熟油揉匀，醒20分钟。","白糖、熟面粉、芝麻拌成糖馅，掺熟面粉可防止流糖烫口。","面团分剂捏成小碗，包入糖馅，用虎口收紧口，按成小饼。","六成油温（筷子周围冒密集小泡）下锅，小火炸到鼓起、两面金黄，捞出沥油。"]},
+"虾仁蛋炒饭": { source:"下厨房·高赞家常菜谱", ingredients:["隔夜米饭 2碗（约300克）","鸡蛋 2个","鲜虾仁 100克","青豆、胡萝卜、玉米粒共80克","葱花","生抽10毫升、盐2克","白胡椒、料酒"], steps:["虾仁去虾线，用料酒、盐腌5分钟；鸡蛋打散，隔夜米饭提前打散。","虾仁滑炒变色盛出，鸡蛋下锅炒散。","下杂蔬粒炒断生，倒入米饭大火翻炒到粒粒分明、在锅中跳动。","虾仁回锅，加生抽、盐、白胡椒，最后撒大量葱花翻匀出锅。"]},
+"西红柿鸡蛋汤": { source:"下厨房·高赞家常菜谱", ingredients:["西红柿 2个","鸡蛋 2个","葱花","盐 3克","淀粉 10克（可选）","白胡椒、香油、香菜"], steps:["西红柿去皮切小块，鸡蛋打散。","锅中放少许油下西红柿炒出红汤出沙，加清水800毫升烧开煮2分钟。","喜欢浓稠可勾薄芡；转小火，把蛋液沿筷子或锅边细细淋入形成蛋花。","蛋花浮起后加盐、白胡椒，关火撒葱花、香菜，淋香油。"]},
+"白菜鸡蛋豆腐汤": { source:"豆果美食", ingredients:["大白菜叶 3片","嫩豆腐 半盒","鸡蛋 2个","葱花、姜丝","盐 3克","白胡椒、香油"], steps:["白菜切丝，豆腐切小条，鸡蛋打散。","锅中放少许油炒香姜丝，下白菜丝炒软，加清水800毫升烧开。","下豆腐煮2分钟，转小火淋入蛋液成蛋花。","加盐、白胡椒，关火撒葱花、淋香油。"]},
+"冬瓜丸子汤": { source:"下厨房·高赞家常菜谱", ingredients:["冬瓜 300克","猪肉馅 250克","蛋清 1个","葱姜水 60毫升","淀粉 10克","盐4克、白胡椒","香菜、香油"], steps:["肉馅加蛋清、葱姜水（分次打入）、淀粉、盐2克，顺一个方向搅打上劲。","冬瓜去皮切薄片。","锅中水烧到将开未开、锅底冒小泡时转小火，用虎口挤丸子、勺子舀入水中。","丸子浮起后下冬瓜片，中火煮到冬瓜透明，加盐、白胡椒，撒香菜、淋香油。"]},
+"肉丸子青菜汤": { source:"下厨房·家常汤品", ingredients:["猪肉馅 250克","小青菜（小白菜）200克","蛋清 1个","葱姜水、淀粉10克","盐4克、白胡椒","姜丝、香油"], steps:["肉馅加蛋清、葱姜水、淀粉、盐搅打上劲。","清水烧到将开未开时转小火，挤入肉丸子，小火浸煮到浮起撇沫。","下姜丝煮3分钟到丸子熟透。","下青菜煮软，加盐、白胡椒，淋香油出锅。"]},
+"紫菜蛋花汤": { source:"下厨房·快手汤", ingredients:["紫菜 5克","鸡蛋 2个","葱花、虾皮","盐 3克","白胡椒、香油","生抽 5毫升"], steps:["紫菜撕碎放碗中，加虾皮；鸡蛋打散。","锅中加清水700毫升烧开，加少许生抽。","转小火，蛋液沿锅边画圈淋入，形成漂亮蛋花。","冲入放紫菜的碗中（或下紫菜煮10秒），加盐、白胡椒、葱花、香油。"]},
+"排骨玉米汤": { source:"下厨房·清炖汤品", ingredients:["排骨 500克","甜玉米 2根","胡萝卜 1根","姜片、葱段","盐 4克","白胡椒、料酒"], steps:["排骨冷水下锅加料酒、姜片焯水，煮沸撇沫，用温水洗净。","砂锅放排骨、姜片、葱结，加足量热水，大火烧开转最小火炖40分钟。","玉米切段、胡萝卜切块放入，继续炖20分钟到汤甜肉烂。","出锅前加盐、白胡椒，清炖不放酱油，保持汤色清亮。"]},
+"酸辣汤": { source:"东方美食·酸辣味型", ingredients:["嫩豆腐 半盒","水发木耳、火腿（熟肉丝）","冬笋丝","鸡蛋 1个","香醋 25毫升、白胡椒3克","生抽15毫升、淀粉20克","香油、葱花"], steps:["豆腐、木耳、火腿、冬笋都切细丝，鸡蛋打散。","锅中加高汤或清水800毫升烧开，下所有丝料煮2分钟，加生抽。","水淀粉勾稠到汤能挂勺，转小火淋入蛋液成蛋花。","关火后再加香醋、白胡椒，醋最后放才能保住酸香，淋香油、撒葱花。"]},
+"蛋挞": { source:"下厨房·家庭烘焙", ingredients:["蛋挞皮 12个","鸡蛋 2个","牛奶 200毫升","淡奶油 100毫升","白糖 35克"], steps:["牛奶、淡奶油、糖加热搅到糖化后放凉，加入蛋液轻轻搅匀，避免打起泡。","挞液过筛2次，静置消泡。","蛋挞皮摆入烤盘，挞液倒到八分满。","烤箱200℃预热，中层烤20–25分钟，表面出现焦糖斑点即可。"]},
+"杨枝甘露": { source:"下厨房·港式甜品", ingredients:["芒果 2个（约400克）","西柚 半个","西米 80克","椰浆 150毫升","牛奶 100毫升","糖 20克"], steps:["水开下西米，中火煮15分钟，关火焖10分钟到无白芯，过凉水沥干。","芒果取肉，三分之二的芒果肉加椰浆、牛奶、糖用料理机打成芒果浆。","剩余芒果切小丁，西柚撕成颗粒。","杯中放西米、芒果浆，加芒果丁和西柚，冷藏30分钟口感最佳。"]},
+"小蛋糕": { source:"下厨房·戚风纸杯蛋糕", ingredients:["低筋面粉 90克","鸡蛋 4个","牛奶 60毫升","玉米油 50毫升","白糖 60克","柠檬汁 几滴"], steps:["蛋黄加牛奶、玉米油搅匀，筛入低粉拌成蛋黄糊；蛋白加柠檬汁分3次加糖，打发到硬性发泡。","取三分之一蛋白霜与蛋黄糊翻拌均匀，再倒回蛋白霜翻拌，不要画圈以免消泡。","面糊装入纸杯到八分满，震出大气泡。","烤箱150℃预热，中层烤30–35分钟，出炉晾凉。"]},
+"柠檬水": { source:"豆果美食·健康饮品", ingredients:["柠檬 2个","蜂蜜（白糖）20克","凉白开 800毫升","冰块、盐少许"], steps:["柠檬用盐搓洗表皮蜡质，清水冲净，切薄片并去籽，去籽可避免发苦。","取几片柠檬捣出汁，留几片装饰。","用40℃以下的温水或凉白开冲泡，热水会发苦并破坏维C。","加蜂蜜搅匀，冷藏或加冰块饮用。"]},
+"鲜榨西瓜汁": { source:"下厨房·鲜榨饮品", ingredients:["西瓜 500克（净果肉）","冰块（凉白开）","柠檬汁几滴（可选）","蜂蜜（可选）"], steps:["西瓜去籽、去皮切小块。","放入破壁机或榨汁机，可加几块冰。","高速搅打30–45秒，西瓜水分足，一般不用再加水。","可过滤后饮用，滴几滴柠檬汁增鲜，现榨现喝。"]},
+"鲜榨橙汁": { source:"豆果美食·鲜榨饮品", ingredients:["鲜橙 3–4个（约500克果肉）","凉白开 100毫升（可选）","蜂蜜、冰块（可选）"], steps:["橙子对半切开，用榨汁机取汁，或去皮去籽取果肉。","果肉放料理机加少量凉白开打细。","喜欢细腻口感可过滤掉果渣。","加冰块或冷藏后立即饮用。"]},
+"火龙果香蕉奶昔": { source:"豆果美食·奶昔", ingredients:["红心火龙果 半个","香蕉 1根","酸奶（牛奶）250毫升","蜂蜜 10克"], steps:["火龙果去皮取肉，香蕉剥皮掰段，提前冷冻30分钟口感更绵密。","水果放入料理机，倒入酸奶或牛奶。","高速搅打45秒到顺滑。","按口味加蜂蜜，倒杯立即饮用。"]},
+"蓝莓香蕉奶昔": { source:"豆果美食·奶昔", ingredients:["蓝莓 120克","香蕉 1根","酸奶（牛奶）250毫升","蜂蜜 10克"], steps:["蓝莓用淡盐水浸泡洗净，香蕉掰段。","全部放入料理机，加酸奶或牛奶。","高速搅打到细腻顺滑、呈淡紫色。","加蜂蜜调味，倒杯点缀几颗蓝莓即可。"]},
+"炸鸡柳": { source:"下厨房·香酥小吃", ingredients:["鸡胸肉 300克","面包糠 80克","鸡蛋 1个","淀粉（面粉）30克","生抽10毫升、料酒10毫升","盐2克、白胡椒、姜","孜然（椒盐）"], steps:["鸡胸切1厘米粗条，加生抽、料酒、盐、白胡椒、姜丝腌20分钟。","依次裹一层淀粉、一层全蛋液、一层面包糠，用手攥紧。","油温六成热（约170℃）下鸡柳，中小火炸2–3分钟定型微黄捞出。","升温八成热复炸30秒到金黄酥脆，捞出沥油，撒孜然、椒盐。"]},
+"芒果奶昔": { source:"豆果美食·奶昔", ingredients:["芒果 2个（约300克果肉）","牛奶（酸奶）250毫升","蜂蜜 10克"], steps:["芒果贴核切开取肉切块，冷藏30分钟。","芒果肉和牛奶或酸奶放入料理机。","高速搅打45秒到顺滑浓稠。","按口味加蜂蜜，倒杯点缀芒果粒即可。"]},
+"牛油果香蕉奶昔": { source:"豆果美食·奶昔", ingredients:["牛油果 1个","香蕉 1根","牛奶 250毫升","蜂蜜 10克"], steps:["牛油果沿核切开去核，用勺挖出果肉，香蕉掰段。","果肉与牛奶一起放入料理机。","高速搅打到丝滑细腻，牛油果能让质地更绵密。","加蜂蜜调味，立即饮用以免氧化变色。"]},
+"切切西瓜": { source:"下厨房·水果处理", ingredients:["西瓜 适量"], steps:["切之前先用流水把西瓜外皮冲洗干净，避免刀把表面脏污带入果肉。","对半切开，再切成月牙瓣，或十字花切成小块。","用刀沿皮片下瓜肉、去籽，切成方便入口的块。","装碗冷藏15分钟口感更冰爽，现切现吃。"]},
+"烤肠": { source:"下厨房·家庭煎烤", ingredients:["烤肠（脆皮肠）4根","食用油 少许","孜然粉、辣椒粉、白芝麻"], steps:["烤肠解冻，表面划几道斜口，既防爆开也更入味。","平底锅刷薄油，中小火下烤肠，勤翻动。","煎或小火烤8–10分钟到表皮微焦、肠身鼓起（烤箱200℃烤12分钟、空气炸锅180℃烤10分钟均可）。","撒孜然粉、辣椒粉、白芝麻，趁热吃。"]},
+"榴莲": { source:"下厨房·水果处理", ingredients:["榴莲 适量"], steps:["挑选果刺靠拢、底部有裂缝、闻着香浓的成熟榴莲。","从底部裂缝处用力掰开，沿纹路一瓣瓣打开。","取出果肉，去掉大核。","果肉直接食用，冷藏后口感如冰淇淋，一次不宜多吃。"]},
+"螺蛳粉": { source:"下厨房·袋装煮法", ingredients:["袋装螺蛳粉 1包","清水","青菜","煎蛋（卤蛋，可选）"], steps:["米粉冷水下锅煮10–12分钟，到能用筷子夹断，捞出过凉水。","重新烧500毫升清水，水开下煮好的米粉煮1分钟。","关火或转小火，加入螺蛳汤包、酸笋、酸豆角、木耳萝卜丁、花生腐竹等配料包。","另锅烫熟青菜，加辣油、香醋，配煎蛋拌匀食用。"]},
+"烤串烤肉": { source:"美食台·家庭烤串", ingredients:["羊肉（牛肉）500克","洋葱 半个","孜然粉 10克","辣椒粉 8克","生抽15毫升、料酒10毫升","盐3克、食用油15毫升","竹签"], steps:["肉切2厘米块，洋葱切丝，加生抽、料酒、盐、油和一半孜然抓匀腌30分钟。","肉块肥瘦相间穿串，也可直接铺在烤盘上。","烤箱220℃预热，肉串放烤架、下方接烤盘，烤8分钟翻面。","撒孜然粉、辣椒粉、盐再烤5–8分钟，到滋滋冒油、边缘微焦即可。"]},
+"卤鸭脖": { source:"厨师之家·卤味配方", ingredients:["鸭脖 500克","葱姜、料酒","卤料包（八角桂皮香叶草果小茴香花椒干辣椒）","生抽30毫升、老抽10毫升","豆瓣酱15克、冰糖15克","盐、啤酒1罐（可选）"], steps:["鸭脖去掉淋巴洗净，冷水下锅加葱姜、料酒焯水，撇沫捞出。","锅中炒香豆瓣酱、姜葱和卤料，加生抽、老抽、冰糖，倒入啤酒和热水没过鸭脖。","大火烧开转小火卤30分钟，加盐调味。","关火后让鸭脖在卤汤里泡1–2小时更入味，捞出斩段，可刷一层辣油。"]},
+"香辣小龙虾": { source:"美食台·夜宵硬菜", ingredients:["小龙虾 1000克","火锅底料（豆瓣酱）40克","啤酒 1罐（500毫升）","葱姜蒜","干辣椒15克、花椒5克","生抽20毫升、老抽5毫升、白糖10克","八角桂皮香叶"], steps:["小龙虾用刷子逐只刷洗干净，掐住中间尾片抽出虾线，沥干。","锅中多放油，下小龙虾大火炸或炒到变红盛出。","底油下姜葱蒜、干辣椒、花椒、火锅底料，炒出红油香味。","小龙虾回锅翻匀，加生抽、老抽、糖，倒啤酒没过，大火烧开转中火焖15分钟。","开盖大火收汁，撒香菜、葱段出锅。"]},
+"火锅": { source:"下厨房·家庭涮煮", ingredients:["火锅底料 150克","清水（高汤）1500毫升","羊肉卷/肥牛、毛肚鸭肠、虾","各类丸子","菌菇、根茎蔬菜、叶菜","麻酱或蒜泥油碟"], steps:["锅中放少许油炒香火锅底料1分钟，加清水或高汤1500毫升，大火煮沸转小火煮8分钟成锅底。","先下耐煮的丸子、菌菇、根茎类，煮5–8分钟。","再下肉片涮30–60秒到刚变色最嫩；毛肚、鸭肠七上八下烫10–15秒。","叶菜最后下锅烫1–2分钟，汤变少只补热水，蘸麻酱或油碟食用。"]},
+"火鸡面": { source:"豆果美食·袋装煮法", ingredients:["火鸡面 1包","清水","煎蛋 1个","自带海苔芝麻包","芝士片（可选）"], steps:["锅中加水烧开，下面饼煮5分钟到软硬适口。","留约3勺面汤，其余水倒掉，别全倒干以便拌开酱料。","转小火加入火鸡辣酱包，翻拌30秒让面条均匀裹酱、汤汁收浓。","盛出撒自带海苔芝麻包，盖一个煎蛋或芝士片，趁热拌匀吃。"]}
+}; function getCategory(name) { if (/蛋挞|甘露|蛋糕|柠檬水|汁|奶昔|切切西瓜|榴莲/.test(name)) return "甜品饮品"; if (/汤|粥|豆腐脑/.test(name)) return "汤粥"; if (/凉拌|腌萝卜|花生米|猪头肉|熏肠|芹菜花生|黄瓜拌油条|麻酱面藕|黄瓜拉皮|小葱拌豆腐/.test(name)) return "凉菜"; if (/炸鸡柳|烤肠|螺蛳粉|烤串|鸭脖|小龙虾|火锅|火鸡面/.test(name)) return "夜宵"; if (/带鱼|大虾|白灼虾|虾仁|花蛤|鲜虾/.test(name)) return "海鲜"; if (/饼|米饭|挂面|面条|粥|饺子|馒头|焖面|花卷|馄饨|板面|凉皮|方便面|炸酱面|油条|火烧|油泼面|包子|蛋炒饭|披萨|糖糕/.test(name)) return "主食"; return "家常菜"; }
+// recipeDatabase above holds per-dish ingredients and steps; no generic templates
 
-function getPreciseSteps(name) {
-  if (preciseSpecialSteps[name]) return preciseSpecialSteps[name];
-  if (/鲜榨.*汁|柠檬水/.test(name)) return ["水果300克洗净去皮去籽，切成2厘米小块。","水果与凉开水按3:2放入榨汁机，即水果300克配水200毫升。","高速搅打45–60秒，按口味加入蜂蜜或糖10克再打10秒。","过滤后立即饮用；冷藏不超过4小时。"];
-  if (/奶昔/.test(name)) return ["水果250克切块，冷冻或冷藏30分钟。","水果与牛奶或酸奶按1:1加入料理机，即各250克/毫升。","加入蜂蜜10克，高速搅打45秒；太稠可补牛奶30毫升。","倒杯后立即饮用，避免久放分层。"];
-  if (/凉拌|拉皮|苦菊|菠菜|面藕|小葱拌豆腐|芹菜花生|腌萝卜/.test(name)) return ["主料约400克洗净；需要焯水的食材放入沸水，叶菜焯30秒、根茎类焯2分钟，然后过凉。","按生抽15毫升:香醋20毫升:香油5毫升:糖3克:盐2克调汁，加入蒜末15克。","主料充分沥干，倒入料汁抓拌30秒。","静置10分钟入味；易出水的蔬菜在食用前再拌。"];
-  if (/红烧|黄焖|卤/.test(name)) return ["主料500克切成3厘米块；肉类冷水下锅，加料酒10毫升，沸腾后焯2分钟并洗净。","锅中加油15毫升，中火炒香葱姜1分钟，放主料煎炒3–5分钟至表面微黄。","按生抽20毫升:老抽5毫升:料酒15毫升:冰糖8克调味，比例约4:1:3:1.6。","加入热水400毫升，大火烧开后转小火；禽肉焖25分钟、猪牛肉焖45–60分钟。","开盖转大火收汁3–5分钟，汤汁能薄薄挂在食材表面时关火。"];
-  if (/炖|铁锅/.test(name)) return ["肉类500克切块焯水2分钟；蔬菜切成约3厘米块。","锅中加油15毫升，炒香葱姜后放肉类中火翻炒4分钟。","加入生抽20毫升、料酒15毫升和热水800毫升，大火煮开。","转小火炖40分钟，再放蔬菜炖15–20分钟。","出锅前加盐4克，开盖中火收浓5分钟。"];
-  if (/糖醋|锅包/.test(name)) return ["主料400克切成0.6厘米厚片，加盐2克、料酒10毫升腌15分钟。","淀粉60克与清水55毫升调成浓糊，均匀裹住主料。","油温170℃炸3分钟定型，捞出；升至190℃复炸40秒至酥脆。","按白糖30克:米醋30毫升:生抽10毫升:清水30毫升调汁，比例3:3:1:3。","锅中留油5毫升，倒汁熬40秒至冒密泡，放炸物快速翻匀20秒出锅。"];
-  if (/蒸/.test(name)) return ["主料约500克处理好，加盐2克、料酒10毫升和姜片腌15分钟。","水烧至完全沸腾后上锅，中火蒸制；蛋羹8分钟、鱼虾8–10分钟、排骨25–30分钟。","关火后焖2分钟再开盖，倒掉盘中多余汤汁。","淋蒸鱼豉油15毫升，撒葱花，浇入180℃热油10毫升激香。"];
-  if (/白灼/.test(name)) return ["鲜虾500克剪须去虾线；锅中加入清水1500毫升、姜10克、料酒15毫升。","水沸后放虾，保持中大火煮2–3分钟，虾身完全弯曲且变红立即捞出。","放入冰水30秒后沥干，保持肉质紧实。","蘸汁按生抽20毫升:香醋10毫升:香油3毫升调匀，加入蒜末10克。"];
-  if (/汤/.test(name)) return ["按2–3人份准备主料400–500克，清水或高汤1000毫升。","耐煮食材冷水下锅，大火煮开后撇沫，转小火煮15–30分钟。","易熟食材最后加入：叶菜煮1分钟、豆腐煮3分钟、蛋液淋入后煮30秒。","按每1000毫升汤加盐4克、白胡椒1克调味。","关火后加香油3毫升和葱花，静置2分钟再盛出。"];
-  if (/粥/.test(name)) return ["米100克淘洗后浸泡20分钟，米与水按1:10配比，加入清水1000毫升。","大火煮开后搅拌一次，转最小火半盖锅盖熬30分钟。","配料切成1厘米小块，在粥熬20分钟时加入；肉类需提前用盐1克、淀粉5克腌10分钟。","继续煮10–15分钟至米粒开花，每5分钟搅拌一次防粘。","咸粥加盐2克，甜粥加糖15克，关火焖5分钟。"];
-  if (/面|凉皮|螺蛳粉/.test(name)) return ["按每人干面100–120克准备，2–3人使用面条300克；煮面水不少于2000毫升。","水沸后下面，保持中大火；鲜面煮3分钟、挂面煮5–6分钟，期间点冷水1次。","汤面按高汤500毫升:生抽15毫升:盐2克配汤；拌面按生抽15毫升:醋10毫升:香油5毫升调汁。","面条捞出后立即与汤底或酱汁拌匀，再加入熟制浇头和青菜。","成品在5分钟内食用，避免面条吸汁变坨。"];
-  if (/饼|馒头|花卷|包子|油条|火烧|糖糕|披萨|蛋糕/.test(name)) return ["基础面团按面粉500克:水280毫升:酵母5克调配；烫面类用80–90℃热水。","揉面8–10分钟至光滑，盖好在28℃发酵60分钟至2倍大。","排气揉2分钟后整形，二次醒发15–20分钟。","蒸制品水开后蒸15分钟并焖3分钟；烙饼中小火每面3分钟；烤制品按180–200℃烤15–25分钟。","成熟后放网架散热5分钟，避免底部回潮。"];
-  if (/炒饭|炒馒头|炒饼|炒方便面/.test(name)) return ["主食300克提前打散，配菜150克切成0.5厘米丁，鸡蛋2个打散。","锅烧至微冒烟，放油15毫升，鸡蛋大火炒40秒后盛出。","补油10毫升，下配菜中火炒2分钟，再下主食大火翻炒3分钟。","加入生抽10毫升、盐2克，鸡蛋回锅再炒30秒。","锅边淋清水5毫升激出蒸汽，翻匀后立即出锅。"];
-  if (/煎|烤|炸/.test(name)) return ["主料500克切成均匀大小，加盐3克、料酒15毫升、生抽10毫升腌20分钟。","煎制用油15毫升、中火每面3–4分钟；烤制先以200℃预热10分钟。","烤制品表面刷油10毫升，200℃烤15–25分钟，中途翻面一次。","油炸时油温保持170℃，分批炸3–5分钟，避免一次放太多降温。","中心完全熟透后静置2分钟，再撒孜然或椒盐3克。"];
-  if (/炒|干煸|香锅/.test(name)) return ["主料约400克切成大小一致的片或丝；肉类加料酒10毫升、淀粉8克腌10分钟。","锅大火预热1分钟，加入食用油20毫升；肉类滑炒60–90秒至变色后盛出。","留底油爆香葱姜蒜15秒，下蔬菜大火炒2–4分钟。","肉类回锅，加入生抽10毫升、盐2克、糖2克，继续大火翻炒30秒。","沿锅边淋清水10毫升，翻匀20秒立即出锅，保持脆嫩。"];
-  return ["按2–3人份准备主料500克、配菜200克，洗净后切成均匀大小。","主料用盐2克、生抽10毫升、料酒10毫升腌15分钟。","锅中加入食用油20毫升，中火加热40秒后炒香葱姜蒜。","放主料中火烹制5–8分钟，再放配菜烹至完全熟透。","出锅前加盐1克调整味道，翻匀30秒后装盘。"];
-}
-
-const localImageFiles = {"可乐鸡翅根":"assets/photos/001.jpg","红烧肉":"assets/photos/002.jpg","糖醋里脊":"assets/photos/003.jpg","红烧带鱼":"assets/photos/004.jpg","土豆炖排骨":"assets/photos/005.jpg","油焖大虾":"assets/photos/006.jpg","水煮肉片":"assets/photos/007.jpg","锅包肉":"assets/photos/008.jpg","黄焖鸡":"assets/photos/009.jpg","烤鸭":"assets/photos/010.jpg","四喜丸子":"assets/photos/011.jpg","排骨铁锅炖":"assets/photos/012.jpg","蒜香蒸排骨":"assets/photos/013.jpg","虾仁蒸蛋":"assets/photos/014.jpg","西红柿炒鸡蛋":"assets/photos/015.jpg","青椒土豆丝":"assets/photos/016.jpg","麻辣香锅":"assets/photos/017.jpg","红烧茄子":"assets/photos/018.jpg","蔬菜鲜虾饼":"assets/photos/019.jpg","小炒牛肉":"assets/photos/020.jpg","煎牛肉饼":"assets/photos/021.jpg","鱼香肉丝":"assets/photos/022.jpg","清炒包菜":"assets/photos/023.jpg","蚂蚁上树":"assets/photos/024.jpg","蒜薹炒肉":"assets/photos/025.jpg","干锅花菜":"assets/photos/026.jpg","白菜猪肉炖粉条":"assets/photos/027.jpg","白灼虾":"assets/photos/028.jpg","香菇油菜":"assets/photos/029.jpg","黄瓜炒鸡蛋":"assets/photos/030.jpg","京酱肉丝":"assets/photos/031.jpg","干煸豆角":"assets/photos/032.jpg","总督豆腐":"assets/photos/033.jpg","蒜黄炒鸡蛋":"assets/photos/034.jpg","清炒丝瓜":"assets/photos/035.jpg","辣炒花蛤":"assets/photos/036.jpg","葱烧豆腐":"assets/photos/037.jpg","肉末豆腐":"assets/photos/038.jpg","茄子烧豆角":"assets/photos/039.jpg","蒜苔炒肉":"assets/photos/040.jpg","青椒酿肉":"assets/photos/041.jpg","黄瓜拉皮":"assets/photos/042.jpg","凉拌菠菜":"assets/photos/043.jpg","凉拌苦菊":"assets/photos/044.jpg","腌萝卜":"assets/photos/045.jpg","炸花生米":"assets/photos/046.jpg","凉拌猪头肉":"assets/photos/047.jpg","小葱拌豆腐":"assets/photos/048.jpg","熏肠":"assets/photos/049.jpg","芹菜花生":"assets/photos/050.jpg","黄瓜拌油条":"assets/photos/051.jpg","麻酱面藕":"assets/photos/052.jpg","烙饼":"assets/photos/053.jpg","米饭":"assets/photos/054.jpg","鸡蛋挂面":"assets/photos/055.jpg","面条":"assets/photos/056.jpg","小米南瓜粥":"assets/photos/057.jpg","饺子":"assets/photos/058.jpg","炒馒头":"assets/photos/059.jpg","豆角焖面":"assets/photos/060.jpg","大米粥":"assets/photos/061.jpg","玉米粥":"assets/photos/062.jpg","椒盐花卷":"assets/photos/063.jpg","小馄饨":"assets/photos/064.jpg","牛肉板面":"assets/photos/065.jpg","炒饼":"assets/photos/066.jpg","麻酱凉皮":"assets/photos/067.jpg","炒方便面":"assets/photos/068.jpg","炸酱面":"assets/photos/069.jpg","油条":"assets/photos/070.jpg","豆腐脑":"assets/photos/071.jpg","发面火烧":"assets/photos/072.jpg","油泼面":"assets/photos/073.jpg","椒盐葱花饼":"assets/photos/074.jpg","馒头":"assets/photos/075.jpg","披萨":"assets/photos/076.jpg","煎蛋":"assets/photos/077.jpg","酱肉包子":"assets/photos/078.jpg","皮蛋瘦肉粥":"assets/photos/079.jpg","脆皮糖糕":"assets/photos/080.jpg","虾仁蛋炒饭":"assets/photos/081.jpg","西红柿鸡蛋汤":"assets/photos/082.jpg","白菜鸡蛋豆腐汤":"assets/photos/083.jpg","冬瓜丸子汤":"assets/photos/084.jpg","肉丸子青菜汤":"assets/photos/085.jpg","紫菜蛋花汤":"assets/photos/086.jpg","排骨玉米汤":"assets/photos/087.jpg","酸辣汤":"assets/photos/088.jpg","蛋挞":"assets/photos/089.jpg","杨枝甘露":"assets/photos/090.jpg","小蛋糕":"assets/photos/091.jpg","柠檬水":"assets/photos/092.jpg","鲜榨西瓜汁":"assets/photos/093.jpg","鲜榨橙汁":"assets/photos/094.jpg","火龙果香蕉奶昔":"assets/photos/095.jpg","蓝莓香蕉奶昔":"assets/photos/096.jpg","炸鸡柳":"assets/photos/097.jpg","芒果奶昔":"assets/photos/098.jpg","牛油果香蕉奶昔":"assets/photos/099.jpg","切切西瓜":"assets/photos/100.jpg","烤肠":"assets/photos/101.jpg","榴莲":"assets/photos/102.jpg","螺蛳粉":"assets/photos/103.jpg","烤串烤肉":"assets/photos/104.jpg","卤鸭脖":"assets/photos/105.jpg","香辣小龙虾":"assets/photos/106.jpg","火锅":"assets/photos/107.jpg","火鸡面":"assets/photos/108.jpg"}; function imageUrl(name) { return localImageFiles[name] || ""; } const recipes = dishNames.map((name) => ({ name, category: getCategory(name), ingredients: getPreciseIngredients(name), steps: getPreciseSteps(name), image: imageUrl(name) })); const wheel = document.getElementById("wheel"); const chips = document.getElementById("chips"); const spinBtn = document.getElementById("spinBtn"); const shuffleBtn = document.getElementById("shuffleBtn"); const statusText = document.getElementById("statusText"); const countBadge = document.getElementById("countBadge"); const resultTitle = document.getElementById("resultTitle"); const resultMeta = document.getElementById("resultMeta"); const ingredients = document.getElementById("ingredients"); const steps = document.getElementById("steps"); const foodImage = document.getElementById("foodImage"); const photoFallback = document.getElementById("photoFallback"); let activeCategory = "全部"; let currentBatch = []; let currentRotation = 0; let spinning = false; function shuffle(items) { const copy = items.slice(); for (let index = copy.length - 1; index > 0; index -= 1) { const swapIndex = Math.floor(Math.random() * (index + 1)); [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]]; } return copy; } function categoryPool() { return activeCategory === "全部" ? recipes : recipes.filter((recipe) => recipe.category === activeCategory); } function createChips() { chips.innerHTML = ""; categories.forEach((category) => { const button = document.createElement("button"); button.className = `chip${category === activeCategory ? " is-active" : ""}`; button.type = "button"; button.textContent = category; button.addEventListener("click", () => { if (spinning || activeCategory === category) return; activeCategory = category; createChips(); refreshBatch(); }); chips.appendChild(button); }); } function renderWheel() { wheel.innerHTML = ""; const sliceStep = 360 / currentBatch.length; const gradientStops = currentBatch.map((recipe, index) => `${wheelColors[index % wheelColors.length]} ${index * sliceStep}deg ${(index + 1) * sliceStep}deg`); wheel.style.setProperty("--wheel-gradient", `conic-gradient(from 0deg, ${gradientStops.join(", ")})`); currentBatch.forEach((recipe, index) => { const label = document.createElement("div"); const labelAngle = -90 + index * sliceStep + sliceStep / 2; label.className = "slice-label"; label.style.transform = `translate(-50%, -50%) rotate(${labelAngle}deg) translateX(calc(var(--wheel-size) * .37)) rotate(${-labelAngle}deg)`; label.innerHTML = `<span>${recipe.name}</span>`; wheel.appendChild(label); }); const restingRotation = -(180 / currentBatch.length); wheel.classList.add("is-resetting"); wheel.style.setProperty("--rotation", `${restingRotation}deg`); currentRotation = restingRotation; requestAnimationFrame(() => requestAnimationFrame(() => wheel.classList.remove("is-resetting"))); } function showRecipe(recipe) { resultTitle.textContent = recipe.name; resultMeta.textContent = `${recipe.category} · 用量可按人数调整`; ingredients.innerHTML = recipe.ingredients.map((item) => `<span class="ingredient">${item}</span>`).join(""); steps.innerHTML = recipe.steps.map((item) => `<li>${item}</li>`).join(""); const requestedImage = recipe.image; foodImage.dataset.pending = requestedImage; if (!requestedImage) { foodImage.hidden = true; return; } const preloader = new Image(); preloader.onload = () => { if (foodImage.dataset.pending !== requestedImage) return; foodImage.alt = `${recipe.name}成品图`; foodImage.src = requestedImage; foodImage.hidden = false; }; preloader.onerror = () => { if (foodImage.dataset.pending === requestedImage) foodImage.hidden = true; }; preloader.src = requestedImage; } function refreshBatch() { const pool = categoryPool(); currentBatch = shuffle(pool).slice(0, Math.min(12, pool.length)); renderWheel(); showRecipe(currentBatch[0]); countBadge.textContent = `${currentBatch.length} / ${pool.length} 道`; statusText.textContent = `已切换到“${activeCategory}”，本轮候选已更新。`; } function alignRotation(index) { const sliceStep = 360 / currentBatch.length; const desiredMod = ((-(index + .5) * sliceStep) % 360 + 360) % 360; const currentMod = ((currentRotation % 360) + 360) % 360; const delta = ((desiredMod - currentMod) % 360 + 360) % 360; return currentRotation + delta + 360 * (5 + Math.floor(Math.random() * 3)); } function spin() { if (spinning || !currentBatch.length) return; spinning = true; spinBtn.disabled = true; shuffleBtn.disabled = true; statusText.textContent = "正在认真替你挑菜……"; const index = Math.floor(Math.random() * currentBatch.length); const target = currentBatch[index]; const nextRotation = alignRotation(index); wheel.style.setProperty("--rotation", `${nextRotation}deg`); currentRotation = nextRotation; const finish = () => { spinning = false; spinBtn.disabled = false; shuffleBtn.disabled = false; showRecipe(target); statusText.textContent = `今天就吃“${target.name}”！不满意可以再转一次。`; wheel.removeEventListener("transitionend", finish); }; wheel.addEventListener("transitionend", finish); } spinBtn.addEventListener("click", spin); shuffleBtn.addEventListener("click", () => { if (!spinning) refreshBatch(); }); window.addEventListener("keydown", (event) => { if (event.code === "Space" && !event.repeat) { event.preventDefault(); spin(); } }); createChips(); refreshBatch(); </script></body> </html>
+const localImageFiles = {"可乐鸡翅根":"assets/photos/001.jpg","红烧肉":"assets/photos/002.jpg","糖醋里脊":"assets/photos/003.jpg","红烧带鱼":"assets/photos/004.jpg","土豆炖排骨":"assets/photos/005.jpg","油焖大虾":"assets/photos/006.jpg","水煮肉片":"assets/photos/007.jpg","锅包肉":"assets/photos/008.jpg","黄焖鸡":"assets/photos/009.jpg","烤鸭":"assets/photos/010.jpg","四喜丸子":"assets/photos/011.jpg","排骨铁锅炖":"assets/photos/012.jpg","蒜香蒸排骨":"assets/photos/013.jpg","虾仁蒸蛋":"assets/photos/014.jpg","西红柿炒鸡蛋":"assets/photos/015.jpg","青椒土豆丝":"assets/photos/016.jpg","麻辣香锅":"assets/photos/017.jpg","红烧茄子":"assets/photos/018.jpg","蔬菜鲜虾饼":"assets/photos/019.jpg","小炒牛肉":"assets/photos/020.jpg","煎牛肉饼":"assets/photos/021.jpg","鱼香肉丝":"assets/photos/022.jpg","清炒包菜":"assets/photos/023.jpg","蚂蚁上树":"assets/photos/024.jpg","蒜薹炒肉":"assets/photos/025.jpg","干锅花菜":"assets/photos/026.jpg","白菜猪肉炖粉条":"assets/photos/027.jpg","白灼虾":"assets/photos/028.jpg","香菇油菜":"assets/photos/029.jpg","黄瓜炒鸡蛋":"assets/photos/030.jpg","京酱肉丝":"assets/photos/031.jpg","干煸豆角":"assets/photos/032.jpg","总督豆腐":"assets/photos/033.jpg","蒜黄炒鸡蛋":"assets/photos/034.jpg","清炒丝瓜":"assets/photos/035.jpg","辣炒花蛤":"assets/photos/036.jpg","葱烧豆腐":"assets/photos/037.jpg","肉末豆腐":"assets/photos/038.jpg","茄子烧豆角":"assets/photos/039.jpg","蒜苔炒肉":"assets/photos/040.jpg","青椒酿肉":"assets/photos/041.jpg","黄瓜拉皮":"assets/photos/042.jpg","凉拌菠菜":"assets/photos/043.jpg","凉拌苦菊":"assets/photos/044.jpg","腌萝卜":"assets/photos/045.jpg","炸花生米":"assets/photos/046.jpg","凉拌猪头肉":"assets/photos/047.jpg","小葱拌豆腐":"assets/photos/048.jpg","熏肠":"assets/photos/049.jpg","芹菜花生":"assets/photos/050.jpg","黄瓜拌油条":"assets/photos/051.jpg","麻酱面藕":"assets/photos/052.jpg","烙饼":"assets/photos/053.jpg","米饭":"assets/photos/054.jpg","鸡蛋挂面":"assets/photos/055.jpg","面条":"assets/photos/056.jpg","小米南瓜粥":"assets/photos/057.jpg","饺子":"assets/photos/058.jpg","炒馒头":"assets/photos/059.jpg","豆角焖面":"assets/photos/060.jpg","大米粥":"assets/photos/061.jpg","玉米粥":"assets/photos/062.jpg","椒盐花卷":"assets/photos/063.jpg","小馄饨":"assets/photos/064.jpg","牛肉板面":"assets/photos/065.jpg","炒饼":"assets/photos/066.jpg","麻酱凉皮":"assets/photos/067.jpg","炒方便面":"assets/photos/068.jpg","炸酱面":"assets/photos/069.jpg","油条":"assets/photos/070.jpg","豆腐脑":"assets/photos/071.jpg","发面火烧":"assets/photos/072.jpg","油泼面":"assets/photos/073.jpg","椒盐葱花饼":"assets/photos/074.jpg","馒头":"assets/photos/075.jpg","披萨":"assets/photos/076.jpg","煎蛋":"assets/photos/077.jpg","酱肉包子":"assets/photos/078.jpg","皮蛋瘦肉粥":"assets/photos/079.jpg","脆皮糖糕":"assets/photos/080.jpg","虾仁蛋炒饭":"assets/photos/081.jpg","西红柿鸡蛋汤":"assets/photos/082.jpg","白菜鸡蛋豆腐汤":"assets/photos/083.jpg","冬瓜丸子汤":"assets/photos/084.jpg","肉丸子青菜汤":"assets/photos/085.jpg","紫菜蛋花汤":"assets/photos/086.jpg","排骨玉米汤":"assets/photos/087.jpg","酸辣汤":"assets/photos/088.jpg","蛋挞":"assets/photos/089.jpg","杨枝甘露":"assets/photos/090.jpg","小蛋糕":"assets/photos/091.jpg","柠檬水":"assets/photos/092.jpg","鲜榨西瓜汁":"assets/photos/093.jpg","鲜榨橙汁":"assets/photos/094.jpg","火龙果香蕉奶昔":"assets/photos/095.jpg","蓝莓香蕉奶昔":"assets/photos/096.jpg","炸鸡柳":"assets/photos/097.jpg","芒果奶昔":"assets/photos/098.jpg","牛油果香蕉奶昔":"assets/photos/099.jpg","切切西瓜":"assets/photos/100.jpg","烤肠":"assets/photos/101.jpg","榴莲":"assets/photos/102.jpg","螺蛳粉":"assets/photos/103.jpg","烤串烤肉":"assets/photos/104.jpg","卤鸭脖":"assets/photos/105.jpg","香辣小龙虾":"assets/photos/106.jpg","火锅":"assets/photos/107.jpg","火鸡面":"assets/photos/108.jpg"}; function imageUrl(name) { return localImageFiles[name] || ""; } const recipes = dishNames.map((name) => { const db = recipeDatabase[name]; return { name, category: getCategory(name), ingredients: db.ingredients, steps: db.steps, source: db.source, image: imageUrl(name) }; }); const wheel = document.getElementById("wheel"); const SVG_NS = "http://www.w3.org/2000/svg"; const wheelRotate = document.getElementById("wheelRotate"); const chips = document.getElementById("chips"); const spinBtn = document.getElementById("spinBtn"); const shuffleBtn = document.getElementById("shuffleBtn"); const statusText = document.getElementById("statusText"); const countBadge = document.getElementById("countBadge"); const resultTitle = document.getElementById("resultTitle"); const resultMeta = document.getElementById("resultMeta"); const ingredients = document.getElementById("ingredients"); const steps = document.getElementById("steps"); const foodImage = document.getElementById("foodImage"); const photoFallback = document.getElementById("photoFallback"); let activeCategory = "全部"; let currentBatch = []; let currentRotation = 0; let spinning = false; function shuffle(items) { const copy = items.slice(); for (let index = copy.length - 1; index > 0; index -= 1) { const swapIndex = Math.floor(Math.random() * (index + 1)); [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]]; } return copy; } function categoryPool() { return activeCategory === "全部" ? recipes : recipes.filter((recipe) => recipe.category === activeCategory); } function createChips() { chips.innerHTML = ""; categories.forEach((category) => { const button = document.createElement("button"); button.className = `chip${category === activeCategory ? " is-active" : ""}`; button.type = "button"; button.textContent = category; button.addEventListener("click", () => { if (spinning || activeCategory === category) return; activeCategory = category; createChips(); refreshBatch(); }); chips.appendChild(button); }); } function renderWheel() { const n = currentBatch.length; const sliceStep = 360 / n; const CX = 300, CY = 300, R = 296; const polar = (deg, r) => { const a = deg * Math.PI / 180; return [CX + r * Math.cos(a), CY + r * Math.sin(a)]; }; wheelRotate.innerHTML = ""; currentBatch.forEach((recipe, index) => { const a0 = -90 + index * sliceStep; const a1 = a0 + sliceStep; const [x0, y0] = polar(a0, R); const [x1, y1] = polar(a1, R); const large = sliceStep > 180 ? 1 : 0; const sector = document.createElementNS(SVG_NS, "path"); sector.setAttribute("d", `M${CX} ${CY} L${x0.toFixed(2)} ${y0.toFixed(2)} A${R} ${R} 0 ${large} 1 ${x1.toFixed(2)} ${y1.toFixed(2)} Z`); sector.setAttribute("fill", wheelColors[index % wheelColors.length]); wheelRotate.appendChild(sector); const mid = a0 + sliceStep / 2; const [tx, ty] = polar(mid, R * 0.66); let textDeg = mid; const norm = (mid % 360 + 360) % 360; if (norm > 90 && norm < 270) textDeg = mid + 180; const label = document.createElementNS(SVG_NS, "text"); label.setAttribute("x", tx.toFixed(2)); label.setAttribute("y", ty.toFixed(2)); label.setAttribute("transform", `rotate(${textDeg.toFixed(2)} ${tx.toFixed(2)} ${ty.toFixed(2)})`); label.setAttribute("font-size", recipe.name.length > 5 ? 20 : 25); label.setAttribute("text-anchor", "middle"); label.setAttribute("dominant-baseline", "central"); label.setAttribute("class", "slice-text"); label.textContent = recipe.name; wheelRotate.appendChild(label); }); const restingRotation = -(180 / n); wheelRotate.classList.add("is-resetting"); wheelRotate.style.transform = `rotate(${restingRotation}deg)`; currentRotation = restingRotation; requestAnimationFrame(() => requestAnimationFrame(() => wheelRotate.classList.remove("is-resetting"))); } function showRecipe(recipe) { resultTitle.textContent = recipe.name; resultMeta.textContent = `${recipe.category} · 菜谱参考：${recipe.source} · 用量可按人数增减`; ingredients.innerHTML = recipe.ingredients.map((item) => `<span class="ingredient">${item}</span>`).join(""); steps.innerHTML = recipe.steps.map((item) => `<li>${item}</li>`).join(""); const requestedImage = recipe.image; foodImage.dataset.pending = requestedImage; if (!requestedImage) { foodImage.hidden = true; return; } const preloader = new Image(); preloader.onload = () => { if (foodImage.dataset.pending !== requestedImage) return; foodImage.alt = `${recipe.name}成品图`; foodImage.src = requestedImage; foodImage.hidden = false; }; preloader.onerror = () => { if (foodImage.dataset.pending === requestedImage) foodImage.hidden = true; }; preloader.src = requestedImage; } function refreshBatch() { const pool = categoryPool(); currentBatch = shuffle(pool).slice(0, Math.min(12, pool.length)); renderWheel(); showRecipe(currentBatch[0]); countBadge.textContent = `${currentBatch.length} / ${pool.length} 道`; statusText.textContent = `已切换到“${activeCategory}”，本轮候选已更新。`; } function alignRotation(index) { const sliceStep = 360 / currentBatch.length; const desiredMod = ((-(index + .5) * sliceStep) % 360 + 360) % 360; const currentMod = ((currentRotation % 360) + 360) % 360; const delta = ((desiredMod - currentMod) % 360 + 360) % 360; return currentRotation + delta + 360 * (5 + Math.floor(Math.random() * 3)); } function spin() { if (spinning || !currentBatch.length) return; spinning = true; spinBtn.disabled = true; shuffleBtn.disabled = true; statusText.textContent = "正在认真替你挑菜……"; const index = Math.floor(Math.random() * currentBatch.length); const target = currentBatch[index]; const nextRotation = alignRotation(index); wheelRotate.style.transform = `rotate(${nextRotation}deg)`; currentRotation = nextRotation; const finish = () => { spinning = false; spinBtn.disabled = false; shuffleBtn.disabled = false; showRecipe(target); statusText.textContent = `今天就吃“${target.name}”！不满意可以再转一次。`; wheel.removeEventListener("transitionend", finish); }; wheel.addEventListener("transitionend", finish); } spinBtn.addEventListener("click", spin); shuffleBtn.addEventListener("click", () => { if (!spinning) refreshBatch(); }); window.addEventListener("keydown", (event) => { if (event.code === "Space" && !event.repeat) { event.preventDefault(); spin(); } }); createChips(); refreshBatch(); </script>
+</body>
+</html>
